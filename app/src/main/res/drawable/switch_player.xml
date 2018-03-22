@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="false">
+        <layer-list >
+            <item
+                android:drawable="@drawable/rectangle_shadow"
+                android:left="2sp"
+                android:top="4sp" />
+            <item
+                android:bottom="4sp"
+                android:right="2sp"
+                android:drawable="@drawable/rectangle_white"/>
+        </layer-list>
+    </item>
+
+    <item >
+        <layer-list >
+            <item
+                android:drawable="@drawable/rectangle_white"
+                android:left="2sp"
+                android:top="4sp" />
+        </layer-list>
+    </item>
+</selector>

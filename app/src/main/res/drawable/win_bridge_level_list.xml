@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:maxLevel="0"
+        android:drawable="@drawable/win_bridge_00"/>
+
+    <item android:maxLevel="1"
+        android:drawable="@drawable/win_bridge_01"/>
+
+    <item android:maxLevel="2"
+        android:drawable="@drawable/win_bridge_02"/>
+
+    <item android:maxLevel="3"
+        android:drawable="@drawable/win_bridge_03"/>
+
+    <item android:maxLevel="4"
+        android:drawable="@drawable/win_bridge_04"/>
+
+    <item android:maxLevel="5"
+        android:drawable="@drawable/win_bridge_05"/>
+
+    <item android:maxLevel="6"
+        android:drawable="@drawable/win_bridge_06"/>
+
+    <item android:maxLevel="7"
+        android:drawable="@drawable/win_bridge_07"/>
+
+    <item android:maxLevel="8"
+        android:drawable="@drawable/win_bridge_08"/>
+
+    <item android:maxLevel="9"
+        android:drawable="@drawable/win_bridge_09"/>
+
+    <item android:maxLevel="10"
+        android:drawable="@drawable/win_bridge_10"/>
+
+    <item android:maxLevel="11"
+        android:drawable="@drawable/win_bridge_11"/>
+
+    <item android:maxLevel="12"
+        android:drawable="@drawable/win_bridge_12"/>
+
+    <item android:maxLevel="13"
+        android:drawable="@drawable/win_bridge_13"/>
+
+</level-list>

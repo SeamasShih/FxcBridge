@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">FxcBridge</string>
+    <string name="txt_role_select">Please select your role.</string>
+    <string name="txt_ip">IP:</string>
+    <string name="txt_port">Port:</string>
+    <string name="btn_server">Server</string>
+    <string name="btn_client">Client</string>
+    <string name="btn_create">Create</string>
+    <string name="btn_connect">Connect</string>
+    <string name="Select">Sel</string>
+    <string name="Surrender">Sur</string>
+    <string name="Left">Left</string>
+    <string name="Partner">Partner</string>
+    <string name="Right">Right</string>
+    <string name="You">You</string>
+    <string name="YourBridges">Your team :</string>
+    <string name="CompetitorBridges">Competitor :</string>
+    <string name="PlayerTextNone">( none )</string>
+    <string name="PlayerTextDown">(Server)</string>
+    <string name="PlayerTextLeft">Player 1</string>
+    <string name="PlayerTextUp">Player 2</string>
+    <string name="PlayerTextRight">Player 3</string>
+    <string name="Start">Start</string>
+
+</resources>
