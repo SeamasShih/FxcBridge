@@ -44,7 +44,7 @@ public class MainGameClient extends AppCompatActivity {
         sd = findViewById(R.id.sd);
 
         for (int i = 0; i < MyGameBoard.MyCard.length; i++)
-            MyGameBoard.MyCard[i].setCardSite( (ImageView) findViewById(idMyCardList[i]) );
+            MyGameBoard.MyCard[i].setCardSite( (MyCardImageView) findViewById(idMyCardList[i]) );
 
         for (int i = 0; i < MyGameBoard.MyCardHat.length; i++)
             MyGameBoard.MyCardHat[i].setCardSite( (ImageView) findViewById(idMyCardHatList[i]) );

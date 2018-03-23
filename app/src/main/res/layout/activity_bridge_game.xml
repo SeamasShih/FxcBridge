@@ -5,7 +5,8 @@
     tools:context=".MainGameServer"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:background="@android:color/transparent">
+    android:background="@android:color/transparent"
+    android:clipChildren="false">
 
 
     <com.example.seamasshih.fxcbridge.MyView
@@ -110,13 +111,16 @@
         android:content="@+id/content"
         android:handle="@+id/handle"
         android:orientation="vertical"
-        android:rotation="180">
+        android:rotation="180"
+        android:clipChildren="false">
 
         <Button
             android:id="@+id/handle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#002D9000"
+            android:textSize="20sp"
+            android:textStyle="bold"
             android:text="︿" />
 
         <RelativeLayout
@@ -126,9 +130,10 @@
             android:gravity="center"
             android:background="#AA5ABDFF"
             android:orientation="vertical"
-            android:rotation="180">
+            android:rotation="180"
+            android:clipChildren="false">
 
-            <ImageView
+            <com.example.seamasshih.fxcbridge.MyCardImageView
                 android:id="@+id/poker1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -137,7 +142,7 @@
                 android:layout_alignParentStart="true"
                 app:srcCompat="@drawable/poker_card_58" />
 
-            <ImageView
+            <com.example.seamasshih.fxcbridge.MyCardImageView
                 android:id="@+id/poker2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -146,7 +151,7 @@
                 android:layout_toRightOf="@+id/poker1"
                 app:srcCompat="@drawable/poker_card_58" />
 
-            <ImageView
+            <com.example.seamasshih.fxcbridge.MyCardImageView
                 android:id="@+id/poker3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -155,7 +160,7 @@
                 android:layout_toRightOf="@+id/poker2"
                 app:srcCompat="@drawable/poker_card_58" />
 
-            <ImageView
+            <com.example.seamasshih.fxcbridge.MyCardImageView
                 android:id="@+id/poker4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -164,7 +169,7 @@
                 android:layout_toRightOf="@+id/poker3"
                 app:srcCompat="@drawable/poker_card_58" />
 
-            <ImageView
+            <com.example.seamasshih.fxcbridge.MyCardImageView
                 android:id="@+id/poker5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -173,7 +178,7 @@
                 android:layout_toRightOf="@+id/poker4"
                 app:srcCompat="@drawable/poker_card_58" />
 
-            <ImageView
+            <com.example.seamasshih.fxcbridge.MyCardImageView
                 android:id="@+id/poker6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -182,7 +187,7 @@
                 android:layout_toRightOf="@+id/poker5"
                 app:srcCompat="@drawable/poker_card_58" />
 
-            <ImageView
+            <com.example.seamasshih.fxcbridge.MyCardImageView
                 android:id="@+id/poker7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -191,7 +196,7 @@
                 android:layout_toRightOf="@+id/poker6"
                 app:srcCompat="@drawable/poker_card_58" />
 
-            <ImageView
+            <com.example.seamasshih.fxcbridge.MyCardImageView
                 android:id="@+id/poker8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -200,7 +205,7 @@
                 android:layout_alignParentStart="true"
                 app:srcCompat="@drawable/poker_card_58" />
 
-            <ImageView
+            <com.example.seamasshih.fxcbridge.MyCardImageView
                 android:id="@+id/poker9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -209,7 +214,7 @@
                 android:layout_toRightOf="@+id/poker8"
                 app:srcCompat="@drawable/poker_card_58" />
 
-            <ImageView
+            <com.example.seamasshih.fxcbridge.MyCardImageView
                 android:id="@+id/poker10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -218,7 +223,7 @@
                 android:layout_toRightOf="@+id/poker2"
                 app:srcCompat="@drawable/poker_card_58" />
 
-            <ImageView
+            <com.example.seamasshih.fxcbridge.MyCardImageView
                 android:id="@+id/poker11"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -227,7 +232,7 @@
                 android:layout_toRightOf="@+id/poker3"
                 app:srcCompat="@drawable/poker_card_58" />
 
-            <ImageView
+            <com.example.seamasshih.fxcbridge.MyCardImageView
                 android:id="@+id/poker12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -236,7 +241,7 @@
                 android:layout_toRightOf="@+id/poker11"
                 app:srcCompat="@drawable/poker_card_58" />
 
-            <ImageView
+            <com.example.seamasshih.fxcbridge.MyCardImageView
                 android:id="@+id/poker13"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

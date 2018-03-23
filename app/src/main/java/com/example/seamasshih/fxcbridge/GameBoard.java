@@ -1,7 +1,9 @@
 package com.example.seamasshih.fxcbridge;
 
+import android.animation.AnimatorSet;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -15,20 +17,20 @@ public class GameBoard {
         for (int i = 0; i < MyCard.length; i++)
             MyCard[i] = new Card();
         for (int i = 0; i < MyCardHat.length; i++)
-            MyCardHat[i] = new Card();
+            MyCardHat[i] = new CardHat();
         for (int i = 0; i < PlayedCard.length; i++){
             PlayedCard[i] = new PlayingCard();
         }
-
     }
 
     public static ImageView[] WinBridge = new ImageView[4];
     public static Card[] MyCard = new Card[13];
-    public static Card[] MyCardHat = new Card[13];
+    public static CardHat[] MyCardHat = new CardHat[13];
     public static PlayingCard[] PlayedCard = new PlayingCard[4];
     private static int myPlayingCardIndex;
     private static int playedCount;
     private static int[] cardWaitForDrawing = new int[52];
+    private static AnimatorSet dealCard = new AnimatorSet();
 
     public void addPlayedCount(){ playedCount = ++playedCount % 4 ; }
     public int getPlayedCount(){ return playedCount; }
@@ -69,5 +71,22 @@ public class GameBoard {
             }
         }
     }
+    public void initialDealCardAnimator(){
+        dealCard.playSequentially(
+                MyCard[0].getCardSite().getDealCard(),
+                MyCard[1].getCardSite().getDealCard(),
+                MyCard[2].getCardSite().getDealCard(),
+                MyCard[3].getCardSite().getDealCard(),
+                MyCard[4].getCardSite().getDealCard(),
+                MyCard[5].getCardSite().getDealCard(),
+                MyCard[6].getCardSite().getDealCard(),
+                MyCard[7].getCardSite().getDealCard(),
+                MyCard[8].getCardSite().getDealCard(),
+                MyCard[9].getCardSite().getDealCard(),
+                MyCard[10].getCardSite().getDealCard(),
+                MyCard[11].getCardSite().getDealCard(),
+                MyCard[12].getCardSite().getDealCard());
+    }
+    public void playDealCard(){dealCard.start();}
 
 }

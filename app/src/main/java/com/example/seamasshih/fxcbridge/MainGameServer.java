@@ -27,6 +27,11 @@ public class MainGameServer extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bridge_game);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
 
         initial();
 
@@ -35,10 +40,11 @@ public class MainGameServer extends AppCompatActivity {
         MyGameBoard.arrangeCardWaitForDrawingWithIndex();
         for (int i = 0; i < MyGameBoard.MyCard.length; i++) {
             MyGameBoard.MyCard[i].setCardIndex(MyGameBoard.getCardWaitForDrawingWithIndex(i));
-            MyGameBoard.MyCard[i].getCardSite().setImageResource(MyResource.cardTable[MyGameBoard.getCardWaitForDrawingWithIndex(i)]);
+            MyGameBoard.MyCard[i].getCardSite().setResourceToAnimatorDealCard(MyResource.cardTable[MyGameBoard.getCardWaitForDrawingWithIndex(i)]);
         }
 
         setOnListener();
+        sd.open();
     }
 
     void initial() {
@@ -49,8 +55,10 @@ public class MainGameServer extends AppCompatActivity {
 
         sd = findViewById(R.id.sd);
 
-        for (int i = 0; i < MyGameBoard.MyCard.length; i++)
-            MyGameBoard.MyCard[i].setCardSite( (ImageView) findViewById(idMyCardList[i]) );
+        for (int i = 0; i < MyGameBoard.MyCard.length; i++) {
+            MyGameBoard.MyCard[i].setCardSite((MyCardImageView) findViewById(idMyCardList[i]));
+            MyGameBoard.MyCard[i].getCardSite().initialDealAnimator();
+        }
 
         for (int i = 0; i < MyGameBoard.MyCardHat.length; i++)
             MyGameBoard.MyCardHat[i].setCardSite( (ImageView) findViewById(idMyCardHatList[i]) );
@@ -84,17 +92,22 @@ public class MainGameServer extends AppCompatActivity {
         @Override
         public void onDrawerOpened() {
             buttonSlidingHandler.setText("﹀");
+            buttonSlidingHandler.setTextColor(Color.BLACK);
         }
     };
     SlidingDrawer.OnDrawerCloseListener slidingClose = new SlidingDrawer.OnDrawerCloseListener() {
         @Override
         public void onDrawerClosed() {
             buttonSlidingHandler.setText("︿");
+            buttonSlidingHandler.setTextColor(Color.WHITE);
         }
     };
     Button.OnClickListener surrenderThisGame = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MyGameBoard.MyCard[0].getCardSite().getDealCard().start();
+            MyGameBoard.initialDealCardAnimator();
+            MyGameBoard.playDealCard();
         }
     };
     Button.OnClickListener selectMyPlayingCard = new View.OnClickListener() {
