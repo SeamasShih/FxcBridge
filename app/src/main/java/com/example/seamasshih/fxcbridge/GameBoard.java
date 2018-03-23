@@ -1,6 +1,8 @@
 package com.example.seamasshih.fxcbridge;
 
 import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.Log;
@@ -31,6 +33,8 @@ public class GameBoard {
     private static int playedCount;
     private static int[] cardWaitForDrawing = new int[52];
     private static AnimatorSet dealCard = new AnimatorSet();
+    @SuppressLint("ObjectAnimatorBinding")
+    private ObjectAnimator sleep = ObjectAnimator.ofFloat(this,"translationX" , 0, 0).setDuration(500);
 
     public void addPlayedCount(){ playedCount = ++playedCount % 4 ; }
     public int getPlayedCount(){ return playedCount; }
@@ -85,8 +89,10 @@ public class GameBoard {
                 MyCard[9].getCardSite().getDealCard(),
                 MyCard[10].getCardSite().getDealCard(),
                 MyCard[11].getCardSite().getDealCard(),
-                MyCard[12].getCardSite().getDealCard());
+                MyCard[12].getCardSite().getDealCard(),
+                sleep);
     }
     public void playDealCard(){dealCard.start();}
+    public AnimatorSet getDealCard(){return dealCard;}
 
 }

@@ -1,5 +1,6 @@
 package com.example.seamasshih.fxcbridge;
 
+import android.animation.Animator;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,12 +28,47 @@ public class MainGameClient extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bridge_game);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
 
         initial();
 
-
+        MyGameBoard.initialCardWaitForDrawing();
+        MyGameBoard.randomCardWaitForDrawing();
+        MyGameBoard.arrangeCardWaitForDrawingWithIndex();
+        for (int i = 0; i < MyGameBoard.MyCard.length; i++) {
+            MyGameBoard.MyCard[i].setCardIndex(MyGameBoard.getCardWaitForDrawingWithIndex(i));
+            MyGameBoard.MyCard[i].getCardSite().setResourceToAnimatorDealCard(MyResource.cardTable[MyGameBoard.getCardWaitForDrawingWithIndex(i)]);
+        }
 
         setOnListener();
+
+        MyGameBoard.initialDealCardAnimator();
+        MyGameBoard.getDealCard().addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                sd.open();
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                sd.close();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        MyGameBoard.playDealCard();
     }
 
     void initial() {
@@ -43,8 +79,10 @@ public class MainGameClient extends AppCompatActivity {
 
         sd = findViewById(R.id.sd);
 
-        for (int i = 0; i < MyGameBoard.MyCard.length; i++)
-            MyGameBoard.MyCard[i].setCardSite( (MyCardImageView) findViewById(idMyCardList[i]) );
+        for (int i = 0; i < MyGameBoard.MyCard.length; i++) {
+            MyGameBoard.MyCard[i].setCardSite((MyCardImageView) findViewById(idMyCardList[i]));
+            MyGameBoard.MyCard[i].getCardSite().initialDealAnimator();
+        }
 
         for (int i = 0; i < MyGameBoard.MyCardHat.length; i++)
             MyGameBoard.MyCardHat[i].setCardSite( (ImageView) findViewById(idMyCardHatList[i]) );

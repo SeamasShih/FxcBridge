@@ -1,5 +1,6 @@
 package com.example.seamasshih.fxcbridge;
 
+import android.animation.Animator;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,7 +45,30 @@ public class MainGameServer extends AppCompatActivity {
         }
 
         setOnListener();
-        sd.open();
+
+        MyGameBoard.initialDealCardAnimator();
+        MyGameBoard.getDealCard().addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                sd.open();
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                sd.close();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        MyGameBoard.playDealCard();
     }
 
     void initial() {
@@ -105,9 +129,6 @@ public class MainGameServer extends AppCompatActivity {
     Button.OnClickListener surrenderThisGame = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            MyGameBoard.MyCard[0].getCardSite().getDealCard().start();
-            MyGameBoard.initialDealCardAnimator();
-            MyGameBoard.playDealCard();
         }
     };
     Button.OnClickListener selectMyPlayingCard = new View.OnClickListener() {
