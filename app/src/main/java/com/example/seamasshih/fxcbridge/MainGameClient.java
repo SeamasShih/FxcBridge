@@ -49,10 +49,20 @@ public class MainGameClient extends AppCompatActivity {
         for (int i = 0; i < MyGameBoard.MyCardHat.length; i++)
             MyGameBoard.MyCardHat[i].setCardSite( (ImageView) findViewById(idMyCardHatList[i]) );
 
-        MyGameBoard.PlayedCard[1].setCardSite((ImageView) findViewById(R.id.leftPlayingCard));
-        MyGameBoard.PlayedCard[2].setCardSite((ImageView) findViewById(R.id.partnerPlayingCard));
-        MyGameBoard.PlayedCard[3].setCardSite((ImageView) findViewById(R.id.rightPlayingCard));
-        MyGameBoard.PlayedCard[0].setCardSite((ImageView) findViewById(R.id.myPlayingCard));
+        MyGameBoard.PlayedCard[1].setCardSite((PlayingCardImageView) findViewById(R.id.leftPlayingCard));
+        MyGameBoard.PlayedCard[2].setCardSite((PlayingCardImageView) findViewById(R.id.partnerPlayingCard));
+        MyGameBoard.PlayedCard[3].setCardSite((PlayingCardImageView) findViewById(R.id.rightPlayingCard));
+        MyGameBoard.PlayedCard[0].setCardSite((PlayingCardImageView) findViewById(R.id.myPlayingCard));
+
+        MyGameBoard.PlayedCard[1].setCardSite((PlayingCardImageView) findViewById(R.id.leftPlayingCard));
+        MyGameBoard.PlayedCard[2].setCardSite((PlayingCardImageView) findViewById(R.id.partnerPlayingCard));
+        MyGameBoard.PlayedCard[3].setCardSite((PlayingCardImageView) findViewById(R.id.rightPlayingCard));
+        MyGameBoard.PlayedCard[0].setCardSite((PlayingCardImageView) findViewById(R.id.myPlayingCard));
+
+        MyGameBoard.PlayedCard[1].getCardSite().setThisCardSite(1);
+        MyGameBoard.PlayedCard[2].getCardSite().setThisCardSite(2);
+        MyGameBoard.PlayedCard[3].getCardSite().setThisCardSite(3);
+        MyGameBoard.PlayedCard[0].getCardSite().setThisCardSite(0);
 
     }
 

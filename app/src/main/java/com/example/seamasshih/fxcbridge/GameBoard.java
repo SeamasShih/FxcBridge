@@ -16,14 +16,16 @@ public class GameBoard {
             MyCard[i] = new Card();
         for (int i = 0; i < MyCardHat.length; i++)
             MyCardHat[i] = new Card();
-        for (int i = 0; i < PlayedCard.length; i++)
-            PlayedCard[i] = new Card();
+        for (int i = 0; i < PlayedCard.length; i++){
+            PlayedCard[i] = new PlayingCard();
+        }
+
     }
 
     public static ImageView[] WinBridge = new ImageView[4];
     public static Card[] MyCard = new Card[13];
     public static Card[] MyCardHat = new Card[13];
-    public static Card[] PlayedCard = new Card[4];
+    public static PlayingCard[] PlayedCard = new PlayingCard[4];
     private static int myPlayingCardIndex;
     private static int playedCount;
     private static int[] cardWaitForDrawing = new int[52];
