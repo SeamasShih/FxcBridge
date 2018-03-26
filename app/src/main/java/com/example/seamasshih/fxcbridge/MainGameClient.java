@@ -1,16 +1,36 @@
 package com.example.seamasshih.fxcbridge;
 
 import android.animation.Animator;
-import android.graphics.Color;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SlidingDrawer;
 
+import com.example.seamasshih.fxcbridge.Socket.ClientConnect;
+import com.example.seamasshih.fxcbridge.Socket.ThreadList;
+
+import java.util.StringTokenizer;
+
 public class MainGameClient extends AppCompatActivity {
+
+    //  Rex 2018/03/22 add
+    public static Context context;
+    private final static int SET_PLAYER_CARD = 1010, SET_FIRST_CARD = 1020, SET_DELIVER_RIGHT = 1030;
+    private int setFirstCardIndex = 0, playerIndex, count;
+    private String idSign = "#";
+    ClientBroadcast clientBroadcast = new ClientBroadcast();
+    ClientHandler clientHandler = new ClientHandler();
+    //  Rex
 
     GameBoard MyGameBoard = new GameBoard();
     PokerCardResource MyResource = new PokerCardResource();
@@ -18,7 +38,7 @@ public class MainGameClient extends AppCompatActivity {
     Player MyPlayer = new Player();
     SlidingDrawer sd;
 
-    int[] playerIndex = {0 , 1 , 2 , 3};
+    int[] playerIndexArray = {0 , 1 , 2 , 3};
     int[] idMyCardList = {R.id.poker1, R.id.poker2, R.id.poker3, R.id.poker4, R.id.poker5, R.id.poker6, R.id.poker7, R.id.poker8, R.id.poker9, R.id.poker10, R.id.poker11, R.id.poker12, R.id.poker13};
     int[] idMyCardHatList = {R.id.poker1hat, R.id.poker2hat, R.id.poker3hat, R.id.poker4hat, R.id.poker5hat, R.id.poker6hat, R.id.poker7hat, R.id.poker8hat, R.id.poker9hat, R.id.poker10hat, R.id.poker11hat, R.id.poker12hat, R.id.poker13hat};
     int nowMyCardSelected;
@@ -29,50 +49,19 @@ public class MainGameClient extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bridge_game);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        //  Rex 2018/03/26 add
+        context = this;
+        connectServer();
+        registerClientBroadcastReceiver();
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-
-        if(!isDealOut){
-            initial();
-
-            MyGameBoard.initialCardWaitForDrawing();
-            MyGameBoard.randomCardWaitForDrawing();
-            MyGameBoard.arrangeCardWaitForDrawingWithIndex();
-            for (int i = 0; i < MyGameBoard.MyCard.length; i++) {
-                MyGameBoard.MyCard[i].setCardIndex(MyGameBoard.getCardWaitForDrawingWithIndex(i));
-                MyGameBoard.MyCard[i].getCardSite().setResourceToAnimatorDealCard(MyResource.cardTable[MyGameBoard.getCardWaitForDrawingWithIndex(i)]);
-            }
-
-            setOnListener();
-
-            MyGameBoard.initialDealCardAnimator();
-            MyGameBoard.getDealCard().addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    sd.open();
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    sd.close();
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-            });
-            MyGameBoard.playDealCard();
-            isDealOut = true;
-        }
+        Log.v("TAG","MainGameClient:61");
+        initial();
+        setOnListener();
     }
 
     void initial() {
@@ -105,7 +94,6 @@ public class MainGameClient extends AppCompatActivity {
         MyGameBoard.PlayedCard[2].getCardSite().setThisCardSite(2);
         MyGameBoard.PlayedCard[3].getCardSite().setThisCardSite(3);
         MyGameBoard.PlayedCard[0].getCardSite().setThisCardSite(0);
-
     }
 
     void setOnListener() {
@@ -146,6 +134,9 @@ public class MainGameClient extends AppCompatActivity {
 
             sd.animateClose();
             buttonSelect.setEnabled(false);
+
+            //  Rex 2018/03/22
+            deliverCardToServer(MyGameBoard.PlayedCard[0].getCardIndex());
         }
     };
     ImageView.OnClickListener clickMyCard = new View.OnClickListener() {
@@ -163,4 +154,163 @@ public class MainGameClient extends AppCompatActivity {
             }
         }
     };
+
+
+    //  Rex  2018/03/22 add Classes
+    private class ClientBroadcast extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String mAction = intent.getAction();
+            String receiveMessage = null, idText = null, content = null;
+            Message message = Message.obtain(), firstCardMsg;
+            StringTokenizer tokenizer;
+            switch (mAction){
+                case "ServerMessage":
+                    Log.i("TAG","MainGameClient:209");
+                    receiveMessage = intent.getStringExtra("ServerMessage");
+                    tokenizer = new StringTokenizer(receiveMessage,idSign);
+                    idText = tokenizer.nextToken();
+                    switch (idText){
+                        case "SetFirstCard":
+                            Log.i("TAG","MainGameClient:215");
+                            while (tokenizer.hasMoreTokens()){
+                                firstCardMsg = Message.obtain();
+                                content = tokenizer.nextToken();
+                                if (!content.equals("SetFirstCard")){
+                                    firstCardMsg.what = SET_FIRST_CARD;
+                                    firstCardMsg.obj = content;
+                                    clientHandler.sendMessage(firstCardMsg);
+                                }
+                            }
+                            break;
+                        case "SetPlayerIndex":
+                            playerIndex = Integer.valueOf(tokenizer.nextToken().trim());
+//                            setPlayerIndexArray(playerIndex);
+                            setCount(playerIndex);
+                            Log.i("TAG","MainGameClient:230, PlayerNumber:"+playerIndex);
+                            break;
+                        case "SetSendCardRight":
+                            message.what = SET_DELIVER_RIGHT;
+                            message.obj = "";
+                            while (tokenizer.hasMoreTokens()){
+                                String cardRightContent = tokenizer.nextToken();
+                                if (!cardRightContent.equals("OtherPlayerCard")){
+                                    message.obj = cardRightContent;
+                                }
+                            }
+                            clientHandler.sendMessage(message);
+                            break;
+                        case "OtherPlayerCard":
+                            message.what = SET_PLAYER_CARD;
+                            message.obj = tokenizer.nextToken().trim();
+                            clientHandler.sendMessage(message);
+                            break;
+                    }
+                    break;
+            }
+        }
+    }
+
+    private class ClientHandler extends Handler {
+        public void handleMessage(Message message) {
+            switch (message.what) {
+                case SET_PLAYER_CARD:
+                    setOtherPlayerCard(Integer.valueOf(message.obj.toString().trim()));
+                    break;
+                case SET_FIRST_CARD:
+                    try{
+                        MyGameBoard.MyCard[setFirstCardIndex].setCardIndex(Integer.valueOf(message.obj.toString().trim()));
+                    }catch (NumberFormatException n){
+                        n.printStackTrace();
+                    }
+
+                    Log.v("TAG","MainGameClient:262_MyGameBoard.MyCard["+setFirstCardIndex+"]:"+message.obj.toString().trim());
+                    setFirstCardIndex++;
+                    if (setFirstCardIndex == 13){
+                        setFirstCardIndex = 0;
+                        MyGameBoard.arrangeMyCard();
+
+                        for (int i  = 0; i < MyGameBoard.MyCard.length; i++){
+                            Log.v("TAG","CardIndex:"+MyGameBoard.MyCard[i].getCardIndex());
+                            MyGameBoard.MyCard[i].getCardSite().setResourceToAnimatorDealCard(MyResource.cardTable[MyGameBoard.MyCard[i].getCardIndex()]);
+                        }
+
+                        MyGameBoard.initialDealCardAnimator();
+                        MyGameBoard.getDealCard().addListener(new Animator.AnimatorListener() {
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+                                sd.open();
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                sd.close();
+                            }
+
+                            @Override
+                            public void onAnimationCancel(Animator animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animator animation) {
+
+                            }
+                        });
+                        MyGameBoard.playDealCard();
+
+                    }
+                    break;
+                case SET_DELIVER_RIGHT:
+                    buttonSelect.setEnabled(true);
+                    Log.i("TAG","BridgeGameClient:653");
+                    if (!message.obj.toString().equals("")){
+                        Log.i("TAG","BridgeGameClient:655");
+                        setOtherPlayerCard(Integer.valueOf(message.obj.toString().trim()));
+                    }
+                    break;
+            }
+        }
+
+    }
+
+    //  Rex  2018/03/22  add Functions
+    private void connectServer(){
+        Intent intent = this.getIntent();
+        Bundle bundle = intent.getExtras();
+        new Thread(new ClientConnect(bundle.getString("ip"),bundle.getInt("port"))).start();
+    }
+
+    private void registerClientBroadcastReceiver(){
+        registerReceiver(clientBroadcast,new IntentFilter("ServerMessage"));
+    }
+
+    private void deliverCardToServer(int cardIndex){
+        ThreadList.getServerThread().sendMessage(String.valueOf(cardIndex));
+    }
+
+    private void setOtherPlayerCard(int cardIndex){
+        MyGameBoard.PlayedCard[count].setCardIndex(cardIndex);
+        MyGameBoard.PlayedCard[count].getCardSite().setImageResource(MyResource.cardTable[cardIndex]);
+        calculateCount();
+    }
+//
+//    private void setPlayerIndexArray(int playerIndex){
+//        for (int i = 0; i < playerIndexArray.length; i++){
+//            playerIndexArray[i] = (playerIndexArray[i] + playerIndex) % 4;
+//            Log.v("TAG","playerIndexArray[" + i + "]:" + playerIndexArray[i]);
+//        }
+//    }
+
+    private void setCount(int playerIndex){
+            count = 4 - playerIndex;
+            Log.v("TAG","setCount_count:"+count);
+    }
+
+    private void calculateCount(){
+        count = (count +1) % 4;
+    }
+
+
+
 }

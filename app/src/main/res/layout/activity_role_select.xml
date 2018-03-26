@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/txtIntroduction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/introduction"
+        android:textSize="25sp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:textColor="#000"/>
+
+    <LinearLayout
+        android:layout_below="@id/txtIntroduction"
+        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/btnServer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_server"
+            android:onClick="btnListener"/>
+
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/btnClient"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_client"
+            android:onClick="btnListener"/>
+    </LinearLayout>
+
+</RelativeLayout>

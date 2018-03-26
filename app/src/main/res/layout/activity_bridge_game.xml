@@ -42,7 +42,7 @@
         android:adjustViewBounds="true"
         android:maxHeight="80sp"
         android:layout_centerHorizontal="true"
-        app:srcCompat="@drawable/poker_card_50" />
+        app:srcCompat="@drawable/poker_card_58" />
 
     <com.example.seamasshih.fxcbridge.PlayingCardImageView
         android:id="@+id/rightPlayingCard"
