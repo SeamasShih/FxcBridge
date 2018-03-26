@@ -22,6 +22,7 @@ public class MainGameClient extends AppCompatActivity {
     int[] idMyCardList = {R.id.poker1, R.id.poker2, R.id.poker3, R.id.poker4, R.id.poker5, R.id.poker6, R.id.poker7, R.id.poker8, R.id.poker9, R.id.poker10, R.id.poker11, R.id.poker12, R.id.poker13};
     int[] idMyCardHatList = {R.id.poker1hat, R.id.poker2hat, R.id.poker3hat, R.id.poker4hat, R.id.poker5hat, R.id.poker6hat, R.id.poker7hat, R.id.poker8hat, R.id.poker9hat, R.id.poker10hat, R.id.poker11hat, R.id.poker12hat, R.id.poker13hat};
     int nowMyCardSelected;
+    boolean isDealOut = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,41 +35,44 @@ public class MainGameClient extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
 
-        initial();
+        if(!isDealOut){
+            initial();
 
-        MyGameBoard.initialCardWaitForDrawing();
-        MyGameBoard.randomCardWaitForDrawing();
-        MyGameBoard.arrangeCardWaitForDrawingWithIndex();
-        for (int i = 0; i < MyGameBoard.MyCard.length; i++) {
-            MyGameBoard.MyCard[i].setCardIndex(MyGameBoard.getCardWaitForDrawingWithIndex(i));
-            MyGameBoard.MyCard[i].getCardSite().setResourceToAnimatorDealCard(MyResource.cardTable[MyGameBoard.getCardWaitForDrawingWithIndex(i)]);
+            MyGameBoard.initialCardWaitForDrawing();
+            MyGameBoard.randomCardWaitForDrawing();
+            MyGameBoard.arrangeCardWaitForDrawingWithIndex();
+            for (int i = 0; i < MyGameBoard.MyCard.length; i++) {
+                MyGameBoard.MyCard[i].setCardIndex(MyGameBoard.getCardWaitForDrawingWithIndex(i));
+                MyGameBoard.MyCard[i].getCardSite().setResourceToAnimatorDealCard(MyResource.cardTable[MyGameBoard.getCardWaitForDrawingWithIndex(i)]);
+            }
+
+            setOnListener();
+
+            MyGameBoard.initialDealCardAnimator();
+            MyGameBoard.getDealCard().addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    sd.open();
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    sd.close();
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+            MyGameBoard.playDealCard();
+            isDealOut = true;
         }
-
-        setOnListener();
-
-        MyGameBoard.initialDealCardAnimator();
-        MyGameBoard.getDealCard().addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                sd.open();
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                sd.close();
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        MyGameBoard.playDealCard();
     }
 
     void initial() {

@@ -75,6 +75,19 @@ public class GameBoard {
             }
         }
     }
+    public void arrangeMyCard(){
+        for(int i = 1 ; i < MyCard.length ; i++){
+            for(int j = i ; j > 0 ; j--){
+                int card1 = MyCard[j].getCardIndex();
+                int card2 = MyCard[j-1].getCardIndex();
+                if (card1 < card2){
+                    MyCard[j].setCardIndex(card2);
+                    MyCard[j-1].setCardIndex(card1);
+                }
+            }
+        }
+    }
+
     public void initialDealCardAnimator(){
         dealCard.playSequentially(
                 MyCard[0].getCardSite().getDealCard(),
