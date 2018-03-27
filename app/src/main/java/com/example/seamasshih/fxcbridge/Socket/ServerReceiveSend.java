@@ -33,7 +33,6 @@ public class ServerReceiveSend extends Thread {
     @Override
     public void run() {
         initialDataStream();
-        sendPlayerIndexToClient(playerIndex);
         sendPlayerIndexToServer(playerIndex);
 
         int receiveLength;
@@ -79,7 +78,7 @@ public class ServerReceiveSend extends Thread {
         MainGameServer.context.sendBroadcast(new Intent("playerIndex").putExtra("playerIndex",playerIndex));
     }
 
-    private void sendPlayerIndexToClient(int playerIndex){
+    public static void sendPlayerIndexToClient(int playerIndex){
         ThreadList.getClientThread(playerIndex).sendMessage("SetPlayerIndex#"+playerIndex+"#");
     }
 

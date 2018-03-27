@@ -176,7 +176,11 @@ public class MainGameClient extends AppCompatActivity {
                             while (tokenizer.hasMoreTokens()){
                                 firstCardMsg = Message.obtain();
                                 content = tokenizer.nextToken();
-                                if (!content.equals("SetFirstCard")){
+                                if (content.equals("SetPlayerIndex")){
+                                    playerIndex = Integer.valueOf(tokenizer.nextToken().trim());
+                                    setCount(playerIndex);
+                                }
+                                else if (!content.equals("SetFirstCard")){
                                     firstCardMsg.what = SET_FIRST_CARD;
                                     firstCardMsg.obj = content;
                                     clientHandler.sendMessage(firstCardMsg);
@@ -185,6 +189,15 @@ public class MainGameClient extends AppCompatActivity {
                             break;
                         case "SetPlayerIndex":
                             playerIndex = Integer.valueOf(tokenizer.nextToken().trim());
+                            while (tokenizer.hasMoreTokens()){
+                                firstCardMsg = Message.obtain();
+                                content = tokenizer.nextToken();
+                                if (!content.equals("SetFirstCard")){
+                                    firstCardMsg.what = SET_FIRST_CARD;
+                                    firstCardMsg.obj = content;
+                                    clientHandler.sendMessage(firstCardMsg);
+                                }
+                            }
 //                            setPlayerIndexArray(playerIndex);
                             setCount(playerIndex);
                             Log.i("TAG","MainGameClient:230, PlayerNumber:"+playerIndex);

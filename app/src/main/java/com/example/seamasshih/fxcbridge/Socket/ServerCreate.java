@@ -38,6 +38,10 @@ public class ServerCreate implements Runnable{
                 }
             }
 
+            for (int playerIndex = 1; playerIndex <= Server.CLIENT_LIMITATION; playerIndex++){
+                ServerReceiveSend.sendPlayerIndexToClient(playerIndex);
+            }
+
         }catch (IOException e){
             e.printStackTrace();
         }

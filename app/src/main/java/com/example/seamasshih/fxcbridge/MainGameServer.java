@@ -21,6 +21,7 @@ import android.widget.SlidingDrawer;
 
 import com.example.seamasshih.fxcbridge.Socket.Server;
 import com.example.seamasshih.fxcbridge.Socket.ServerCreate;
+import com.example.seamasshih.fxcbridge.Socket.ServerReceiveSend;
 import com.example.seamasshih.fxcbridge.Socket.ThreadList;
 
 public class MainGameServer extends AppCompatActivity {
@@ -226,8 +227,8 @@ public class MainGameServer extends AppCompatActivity {
         public void handleMessage(Message message){
             switch (message.what) {
                 case SET_PLAYER_CARD:
-                    MyGameBoard.PlayedCard[playerIndexArray[count]].setCardIndex(Integer.valueOf(message.obj.toString().trim()));
-                    MyGameBoard.PlayedCard[playerIndexArray[count]].getCardSite().setImageResource(MyResource.cardTable[Integer.valueOf(message.obj.toString().trim())]);
+                    MyGameBoard.PlayedCard[count].setCardIndex(Integer.valueOf(message.obj.toString().trim()));
+                    MyGameBoard.PlayedCard[count].getCardSite().setImageResource(MyResource.cardTable[Integer.valueOf(message.obj.toString().trim())]);
                     deliverCardToAllClient(message.obj.toString().trim());
                     calculateCount();
                     break;
