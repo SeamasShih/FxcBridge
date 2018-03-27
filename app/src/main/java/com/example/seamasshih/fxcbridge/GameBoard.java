@@ -148,18 +148,18 @@ public class GameBoard {
         for (int i = 0; i < MyCard.length; i++){
             if (MyCard[i].isPlayed()) continue;
             else if (MyCard[i].getCardColor() == cardColor){
-                MyCard[i].getCardSite().setImageResource(R.drawable.rectangle_yellow);
+                MyCardHat[i].getCardSite().setImageResource(R.drawable.available);
                 playOtherColor = false;
             }
             else {
-                MyCard[i].getCardSite().setImageResource(R.drawable.available);
+                MyCardHat[i].getCardSite().setImageResource(R.drawable.hat);
                 MyCard[i].setEnable(false);
             }
         }
         if (playOtherColor)
             for (int i = 0; i < MyCard.length; i++){
                 if (MyCard[i].isPlayed()) continue;
-                else MyCard[i].getCardSite().setImageResource(R.drawable.rectangle_yellow);
+                else MyCardHat[i].getCardSite().setImageResource(R.drawable.available);
             }
     }
 

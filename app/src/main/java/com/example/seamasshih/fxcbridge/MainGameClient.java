@@ -26,7 +26,7 @@ public class MainGameClient extends AppCompatActivity {
     //  Rex 2018/03/22 add
     public static Context context;
     private final static int SET_PLAYER_CARD = 1010, SET_FIRST_CARD = 1020, SET_DELIVER_RIGHT = 1030;
-    private int setFirstCardIndex = 0, playerIndex, count;
+    private int setFirstCardIndex = 0, playerIndex, receiveCardCount = 0, nextTurnFirstPlayer = 0, playerPosition;
     private String idSign = "#";
     ClientBroadcast clientBroadcast = new ClientBroadcast();
     ClientHandler clientHandler = new ClientHandler();
@@ -67,6 +67,7 @@ public class MainGameClient extends AppCompatActivity {
     void initial() {
 
         buttonSelect = findViewById(R.id.buttonSelect);
+        buttonSelect.setEnabled(false);
         buttonSurrender = findViewById(R.id.buttonSurrender);
         buttonSlidingHandler = findViewById(R.id.handle);
 
@@ -178,7 +179,6 @@ public class MainGameClient extends AppCompatActivity {
                                 content = tokenizer.nextToken();
                                 if (content.equals("SetPlayerIndex")){
                                     playerIndex = Integer.valueOf(tokenizer.nextToken().trim());
-                                    setCount(playerIndex);
                                 }
                                 else if (!content.equals("SetFirstCard")){
                                     firstCardMsg.what = SET_FIRST_CARD;
@@ -198,8 +198,7 @@ public class MainGameClient extends AppCompatActivity {
                                     clientHandler.sendMessage(firstCardMsg);
                                 }
                             }
-//                            setPlayerIndexArray(playerIndex);
-                            setCount(playerIndex);
+                            setPlayerIndexArray(playerIndex);
                             Log.i("TAG","MainGameClient:230, PlayerNumber:"+playerIndex);
                             break;
                         case "SetSendCardRight":
@@ -276,6 +275,7 @@ public class MainGameClient extends AppCompatActivity {
                     break;
                 case SET_DELIVER_RIGHT:
                     buttonSelect.setEnabled(true);
+                    MyGameBoard.judgeMyCardEnable(MyGameBoard.PlayedCard[4-playerIndex].getCardColor());
                     Log.i("TAG","BridgeGameClient:653");
                     if (!message.obj.toString().equals("")){
                         Log.i("TAG","BridgeGameClient:655");
@@ -303,25 +303,45 @@ public class MainGameClient extends AppCompatActivity {
     }
 
     private void setOtherPlayerCard(int cardIndex){
-        MyGameBoard.PlayedCard[count].setCardIndex(cardIndex);
-        MyGameBoard.PlayedCard[count].getCardSite().setImageResource(MyResource.cardTable[cardIndex]);
-        calculateCount();
-    }
-//
-//    private void setPlayerIndexArray(int playerIndex){
-//        for (int i = 0; i < playerIndexArray.length; i++){
-//            playerIndexArray[i] = (playerIndexArray[i] + playerIndex) % 4;
-//            Log.v("TAG","playerIndexArray[" + i + "]:" + playerIndexArray[i]);
-//        }
-//    }
+        if (receiveCardCount == 0){
+            playerPosition = calculateNextTurnFirstPlayerPosition(nextTurnFirstPlayer);
+        }
 
-    private void setCount(int playerIndex){
-            count = 4 - playerIndex;
-            Log.v("TAG","setCount_count:"+count);
+        MyGameBoard.PlayedCard[playerPosition].setCardIndex(cardIndex);
+        MyGameBoard.PlayedCard[playerPosition].getCardSite().setImageResource(MyResource.cardTable[cardIndex]);
+        calculateCountAndPosition();
     }
 
-    private void calculateCount(){
-        count = (count +1) % 4;
+    private void setPlayerIndexArray(int playerIndex){
+        for (int i = 0; i < playerIndexArray.length; i++){
+            playerIndexArray[i] = (playerIndexArray[i] + playerIndex) % 4;
+            Log.v("TAG","playerIndexArray[" + i + "]:" + playerIndexArray[i]);
+        }
+    }
+
+    private int calculateNextTurnFirstPlayerPosition(int nextTurnFirstPlayer){
+        for (int position = 0; position < playerIndexArray.length; position++){
+            if (nextTurnFirstPlayer == playerIndexArray[position]){
+                Log.v("TAG","calculateNextTurnFirstPlayerPosition:"+position);
+                return position;
+            }
+        }
+        return 0;
+    }
+
+    private int getNextTurnFirstPlayer(){
+        MyGameBoard.judgeWhoAreBridgeWinner();
+        return MyGameBoard.getBridgeWinner();
+    }
+
+    private void calculateCountAndPosition(){
+        receiveCardCount++;
+        if (receiveCardCount == 4){
+            nextTurnFirstPlayer = getNextTurnFirstPlayer();
+            receiveCardCount = 0;
+        }
+
+        playerPosition = (playerPosition + 1) % 4;
     }
 
 

@@ -189,10 +189,10 @@ public class MainGameServer extends AppCompatActivity {
                 else if (!MyGameBoard.MyCard[i].isEnable()) continue;
                 else if (v.getId() == idMyCardList[i]) {
                     MyGameBoard.setMyPlayingCardIndex(MyGameBoard.MyCard[i].getCardIndex());
-                    MyGameBoard.MyCardHat[i].getCardSite().setImageResource(R.drawable.rectangle_green);
+                    MyGameBoard.MyCardHat[i].getCardSite().setImageResource(R.drawable.selecting);
                     nowMyCardSelected = i;
                 }
-                else MyGameBoard.MyCardHat[i].getCardSite().setImageResource(R.drawable.rectangle_yellow);
+                else MyGameBoard.MyCardHat[i].getCardSite().setImageResource(R.drawable.available);
             }
         }
     };
