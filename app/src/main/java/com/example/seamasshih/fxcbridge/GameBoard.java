@@ -20,15 +20,19 @@ public class GameBoard {
             MyCard[i] = new Card();
         for (int i = 0; i < MyCardHat.length; i++)
             MyCardHat[i] = new CardHat();
-        for (int i = 0; i < PlayedCard.length; i++){
+        for (int i = 0; i < PlayedCard.length; i++)
             PlayedCard[i] = new PlayingCard();
-        }
+        for (int i = 0; i <winBridgeCount.length; i++)
+            winBridgeCount[i] = 0;
     }
 
     public static ImageView[] WinBridge = new ImageView[4];
     public static Card[] MyCard = new Card[13];
     public static CardHat[] MyCardHat = new CardHat[13];
     public static PlayingCard[] PlayedCard = new PlayingCard[4];
+    private int winBridgeCount[] = new int[4];
+    private int myTeamBridgeNeedToWin;
+    private int otherTeamBridgeNeedToWin;
     private static int myPlayingCardIndex;
     private static int playedCount;
     private static int[] cardWaitForDrawing = new int[52];
@@ -38,6 +42,7 @@ public class GameBoard {
     private static AnimatorSet dealCard = new AnimatorSet();
     @SuppressLint("ObjectAnimatorBinding")
     private ObjectAnimator sleep = ObjectAnimator.ofFloat(this,"translationX" , 0, 0).setDuration(500);
+    private AnimatorSet closeBridge = new AnimatorSet();
 
     public void addPlayedCount(){ playedCount = ++playedCount % 4 ; }
     public int getPlayedCount(){ return playedCount; }
@@ -161,6 +166,29 @@ public class GameBoard {
                 if (MyCard[i].isPlayed()) continue;
                 else MyCardHat[i].getCardSite().setImageResource(R.drawable.available);
             }
+    }
+    public void IAmTheFirstPlayer(){
+        for (int i = 0; i < MyCard.length; i++){
+            if (MyCard[i].isPlayed()) continue;
+            MyCardHat[i].getCardSite().setImageResource(R.drawable.available);
+        }
+    }
+
+    private void addWinBridge(int playerSite){
+        winBridgeCount[playerSite]++;
+        WinBridge[playerSite].setImageLevel(winBridgeCount[winBridgeCount[playerSite]]);
+    }
+
+    private boolean doesMyTeamWin(){return winBridgeCount[0]+winBridgeCount[2] >= myTeamBridgeNeedToWin;}
+    private boolean doesOtherTeamWin(){return winBridgeCount[1]+winBridgeCount[3] >= otherTeamBridgeNeedToWin;}
+    
+    public void animationCloseBridge(){
+        closeBridge.playTogether(
+                PlayedCard[0].getCardSite().getCloseBridgeAnimator(bridgeWinner),
+                PlayedCard[1].getCardSite().getCloseBridgeAnimator(bridgeWinner),
+                PlayedCard[2].getCardSite().getCloseBridgeAnimator(bridgeWinner),
+                PlayedCard[3].getCardSite().getCloseBridgeAnimator(bridgeWinner)
+        );
     }
 
 }

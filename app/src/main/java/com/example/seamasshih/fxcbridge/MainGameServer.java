@@ -132,6 +132,8 @@ public class MainGameServer extends AppCompatActivity {
         MyGameBoard.WinBridge[1] = findViewById(R.id.leftWinBridge);
         MyGameBoard.WinBridge[2] = findViewById(R.id.partnerWinBridge);
         MyGameBoard.WinBridge[3] = findViewById(R.id.rightWinBridge);
+        for (int i = 0; i < MyGameBoard.WinBridge.length; i++)
+            MyGameBoard.WinBridge[i].setImageLevel(0);
     }
 
     void setOnListener() {
