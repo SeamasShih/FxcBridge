@@ -15,8 +15,11 @@ public class PlayingCard {
     private boolean enable = true;
     private boolean played = false;
 
+
     public int getCardIndex(){ return cardIndex; }
     public void setCardIndex( int cardIndex ){ this.cardIndex = cardIndex; }
+    public int getCardColor(){return cardIndex/13;}
+    public int getCardPoint(){return cardIndex%13;}
 
     public PlayingCardImageView getCardSite(){ return  cardSite; }
     public void setCardSite( PlayingCardImageView cardSite ){ this.cardSite = cardSite; }

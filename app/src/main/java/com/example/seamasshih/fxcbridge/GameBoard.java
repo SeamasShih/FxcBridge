@@ -32,6 +32,9 @@ public class GameBoard {
     private static int myPlayingCardIndex;
     private static int playedCount;
     private static int[] cardWaitForDrawing = new int[52];
+    private static int bridgeWinner;
+    private static int priorColor;
+    private static int majorColor;
     private static AnimatorSet dealCard = new AnimatorSet();
     @SuppressLint("ObjectAnimatorBinding")
     private ObjectAnimator sleep = ObjectAnimator.ofFloat(this,"translationX" , 0, 0).setDuration(500);
@@ -107,5 +110,57 @@ public class GameBoard {
     }
     public void playDealCard(){dealCard.start();}
     public AnimatorSet getDealCard(){return dealCard;}
+
+    public void setPriorColor(int priorColor){ this.priorColor = priorColor;}
+    public int getPriorColor(){return priorColor;}
+
+    public int getMajorColor(){return majorColor;}
+    public void setMajorColor(int majorColor){this.majorColor = majorColor;}
+
+    public int getBridgeWinner(){return bridgeWinner;}
+    public void judgeWhoAreBridgeWinner(){
+        bridgeWinner = 0;
+        int maxCard = -1;
+        boolean isPriorColorExist = false;
+        for(int i = 0; i < PlayedCard.length; i++){
+            if (isPriorColorExist) {
+                if (PlayedCard[i].getCardColor() == priorColor && PlayedCard[i].getCardIndex() > maxCard){
+                    maxCard = PlayedCard[i].getCardIndex();
+                    bridgeWinner = i;
+                }
+            }
+            else{
+                if (PlayedCard[i].getCardColor() == priorColor){
+                    isPriorColorExist = true;
+                    maxCard = PlayedCard[i].getCardIndex();
+                    bridgeWinner = i;
+                }
+                else if (PlayedCard[i].getCardColor() == majorColor && PlayedCard[i].getCardIndex() > maxCard){
+                    maxCard = PlayedCard[i].getCardIndex();
+                    bridgeWinner = i;
+                }
+            }
+        }
+    }
+
+    public void judgeMyCardEnable(int cardColor){
+        boolean playOtherColor = true;
+        for (int i = 0; i < MyCard.length; i++){
+            if (MyCard[i].isPlayed()) continue;
+            else if (MyCard[i].getCardColor() == cardColor){
+                MyCard[i].getCardSite().setImageResource(R.drawable.rectangle_yellow);
+                playOtherColor = false;
+            }
+            else {
+                MyCard[i].getCardSite().setImageResource(R.drawable.available);
+                MyCard[i].setEnable(false);
+            }
+        }
+        if (playOtherColor)
+            for (int i = 0; i < MyCard.length; i++){
+                if (MyCard[i].isPlayed()) continue;
+                else MyCard[i].getCardSite().setImageResource(R.drawable.rectangle_yellow);
+            }
+    }
 
 }

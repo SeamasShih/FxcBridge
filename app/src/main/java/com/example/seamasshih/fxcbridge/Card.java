@@ -17,6 +17,8 @@ public class Card {
 
     public int getCardIndex(){ return cardIndex; }
     public void setCardIndex( int cardIndex ){ this.cardIndex = cardIndex; }
+    public int getCardColor(){return cardIndex/13;}
+    public int getCardPoint(){return cardIndex%13;}
 
     public MyCardImageView getCardSite(){ return  cardSite; }
     public void setCardSite(MyCardImageView cardSite ){ this.cardSite = cardSite; }
