@@ -94,6 +94,13 @@ public class MainGameClient extends AppCompatActivity {
         MyGameBoard.PlayedCard[2].getCardSite().setThisCardSite(2);
         MyGameBoard.PlayedCard[3].getCardSite().setThisCardSite(3);
         MyGameBoard.PlayedCard[0].getCardSite().setThisCardSite(0);
+
+        MyGameBoard.WinBridge[0] = findViewById(R.id.myWinBridge);
+        MyGameBoard.WinBridge[1] = findViewById(R.id.leftWinBridge);
+        MyGameBoard.WinBridge[2] = findViewById(R.id.partnerWinBridge);
+        MyGameBoard.WinBridge[3] = findViewById(R.id.rightWinBridge);
+        for (int i = 0; i < MyGameBoard.WinBridge.length; i++)
+            MyGameBoard.WinBridge[i].setImageLevel(0);
     }
 
     void setOnListener() {

@@ -25,7 +25,7 @@ public class PlayingCardImageView extends android.support.v7.widget.AppCompatIma
     private int thisCardSite;
     public void setThisCardSite(int cardSite){thisCardSite = cardSite;}
 
-    public void closeBridgeAnimator(int bridgeWinner){
+    public AnimatorSet getCloseBridgeAnimator(int bridgeWinner){
         Resources resources = this.getResources();
         DisplayMetrics dm = resources.getDisplayMetrics();
         int width = dm.widthPixels;
@@ -101,7 +101,7 @@ public class PlayingCardImageView extends android.support.v7.widget.AppCompatIma
         AnimatorSet backAnimSet = new AnimatorSet();
         backAnimSet.play(backToOriginalSiteX).with(backToOriginalSiteY).after(animatorShiftToBridgeWinner);
 
-        backAnimSet.start();
+        return backAnimSet;
     }
 
 }
