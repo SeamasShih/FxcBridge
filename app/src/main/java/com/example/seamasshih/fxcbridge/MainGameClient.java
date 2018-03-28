@@ -33,7 +33,7 @@ public class MainGameClient extends AppCompatActivity {
     ClientHandler clientHandler = new ClientHandler();
     //  Rex
 
-    GameBoard MyGameBoard = new GameBoard();
+    GameBoard MyGameBoard = GameBoard.getInstance();
     PokerCardResource MyResource = new PokerCardResource();
     Button buttonSelect,buttonSurrender,buttonSlidingHandler;
     Player MyPlayer = new Player();

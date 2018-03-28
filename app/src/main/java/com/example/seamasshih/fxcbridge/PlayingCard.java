@@ -19,7 +19,36 @@ public class PlayingCard {
     public int getCardIndex(){ return cardIndex; }
     public void setCardIndex( int cardIndex ){ this.cardIndex = cardIndex; }
     public int getCardColor(){return cardIndex/13;}
-    public int getCardPoint(){return cardIndex%13;}
+    public int getCardPoint(int priorColor){
+        switch (priorColor){
+            case 4:
+                return 12 - cardIndex%13;
+            case 5:
+                return 12 - (cardIndex+1)%13;
+            case 6:
+                return 12- (cardIndex+7)%13;
+            case 7:
+                if (cardIndex%13 == 5)
+                    return 12;
+                else if((cardIndex+1)%13 - 6 > 0)
+                    return 12 - ((cardIndex+1)%13 - 6) *2;
+                else
+                    return 12 - (6 - (cardIndex+1)%13)*2 + 1;
+            case 8:
+                if (cardIndex%13 == 5)
+                    return 12;
+                else if((cardIndex+1)%13 - 6 > 0)
+                    return 12 - ((cardIndex+1)%13 - 6)*2 + 1;
+                else
+                    return 12 - (6 - (cardIndex+1)%13)*2;
+            case 9:
+                return (cardIndex+7)%13;
+            case 10:
+                return (cardIndex+1)%13;
+            default:
+                return cardIndex%13;
+        }
+    }
 
     public PlayingCardImageView getCardSite(){ return  cardSite; }
     public void setCardSite( PlayingCardImageView cardSite ){ this.cardSite = cardSite; }

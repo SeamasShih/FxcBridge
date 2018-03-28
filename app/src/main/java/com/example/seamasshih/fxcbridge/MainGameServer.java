@@ -34,7 +34,7 @@ public class MainGameServer extends AppCompatActivity {
     ServerHandler serverHandler = new ServerHandler();
     //  Rex
 
-    GameBoard MyGameBoard = new GameBoard();
+    GameBoard MyGameBoard = GameBoard.getInstance();
     PokerCardResource MyResource = new PokerCardResource();
     Button buttonSelect,buttonSurrender,buttonSlidingHandler;
     SlidingDrawer sd;
