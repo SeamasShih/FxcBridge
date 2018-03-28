@@ -142,6 +142,7 @@ public class GameBoard {
                 if (PlayedCard[i].getCardColor() == priorColor && PlayedCard[i].getCardPoint(priorColor) > maxCard){
                     maxCard = PlayedCard[i].getCardPoint(priorColor);
                     bridgeWinner = i;
+                    Log.d("TAG","status 1");
                 }
             }
             else{
@@ -149,10 +150,12 @@ public class GameBoard {
                     isPriorColorExist = true;
                     maxCard = PlayedCard[i].getCardPoint(priorColor);
                     bridgeWinner = i;
+                    Log.d("TAG","status 2");
                 }
                 else if (PlayedCard[i].getCardColor() == majorColor && PlayedCard[i].getCardPoint(priorColor) > maxCard){
                     maxCard = PlayedCard[i].getCardPoint(priorColor);
                     bridgeWinner = i;
+                    Log.d("TAG","status 3");
                 }
             }
         }
@@ -165,6 +168,7 @@ public class GameBoard {
             else if (MyCard[i].getCardColor() == cardColor){
                 MyCardHat[i].getCardSite().setImageResource(R.drawable.available);
                 playOtherColor = false;
+                MyCard[i].setEnable(true);
             }
             else {
                 MyCardHat[i].getCardSite().setImageResource(R.drawable.hat);
@@ -174,13 +178,26 @@ public class GameBoard {
         if (playOtherColor)
             for (int i = 0; i < MyCard.length; i++){
                 if (MyCard[i].isPlayed()) continue;
-                else MyCardHat[i].getCardSite().setImageResource(R.drawable.available);
+                MyCardHat[i].getCardSite().setImageResource(R.drawable.available);
+                MyCard[i].setEnable(true);
             }
+    }
+    public void removeHatAllMyCard(){
+        for (int i = 0; i < MyCard.length; i++){
+            if (MyCard[i].isPlayed()) continue;
+            MyCardHat[i].getCardSite().setImageResource(R.drawable.available);
+        }
     }
     public void enableAllMyCard(){
         for (int i = 0; i < MyCard.length; i++){
             if (MyCard[i].isPlayed()) continue;
-            MyCardHat[i].getCardSite().setImageResource(R.drawable.available);
+            MyCard[i].setEnable(true);
+        }
+    }
+    public void unableAllMyCard(){
+        for (int i = 0; i < MyCard.length; i++){
+            if (MyCard[i].isPlayed()) continue;
+            MyCard[i].setEnable(false);
         }
     }
 

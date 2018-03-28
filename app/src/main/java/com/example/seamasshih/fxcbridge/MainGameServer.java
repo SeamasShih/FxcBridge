@@ -21,7 +21,7 @@ import android.widget.SlidingDrawer;
 
 import com.example.seamasshih.fxcbridge.Socket.Server;
 import com.example.seamasshih.fxcbridge.Socket.ServerCreate;
-import com.example.seamasshih.fxcbridge.Socket.ServerReceiveSend;
+
 import com.example.seamasshih.fxcbridge.Socket.ThreadList;
 
 public class MainGameServer extends AppCompatActivity {
@@ -30,6 +30,7 @@ public class MainGameServer extends AppCompatActivity {
     public static Context context;
     private int playerIndex, receiveCardCount = 0, nextTurnFirstPlayer = 0, playerPosition;
     private static final int SET_PLAYER_CARD = 1001;
+    private boolean isFirstRound = true;
     ServerBroadcast serverBroadcast = new ServerBroadcast();
     ServerHandler serverHandler = new ServerHandler();
     //  Rex
@@ -87,14 +88,9 @@ public class MainGameServer extends AppCompatActivity {
                 }
 
                 @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
+                public void onAnimationCancel(Animator animation) {                }
                 @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
+                public void onAnimationRepeat(Animator animation) {                }
             });
             MyGameBoard.playDealCard();
             isDealOut = true;
@@ -175,9 +171,17 @@ public class MainGameServer extends AppCompatActivity {
 
             sd.animateClose();
             buttonSelect.setEnabled(false);
-            MyGameBoard.enableAllMyCard();
+            MyGameBoard.removeHatAllMyCard();
 
             //  Rex 2018/03/22
+            if (isFirstRound){
+                MyGameBoard.setMajorColor(MyGameBoard.PlayedCard[0].getCardColor());
+                isFirstRound = false;
+            }
+            else
+                MyGameBoard.setMajorColor(MyGameBoard.PlayedCard[MyGameBoard.getBridgeWinner()].getCardColor());
+
+            MyGameBoard.unableAllMyCard();
             deliverCardToAllClient(String.valueOf(MyGameBoard.PlayedCard[0].getCardIndex()));
             calculateCountAndPosition();
 
@@ -273,6 +277,7 @@ public class MainGameServer extends AppCompatActivity {
         if (nextPlayerIndex > Server.CLIENT_LIMITATION){
             playerIndex = 0;
             buttonSelect.setEnabled(true);
+            MyGameBoard.judgeMyCardEnable(MyGameBoard.PlayedCard[MyGameBoard.getBridgeWinner()].getCardColor());
         }else{
             ThreadList.getClientThread(nextPlayerIndex).sendMessage("SetSendCardRight#");
         }
@@ -311,8 +316,11 @@ public class MainGameServer extends AppCompatActivity {
         Log.v("TAG","MainGameServer:307_receiveCardCount:"+receiveCardCount);
         if (receiveCardCount == 4){
             nextTurnFirstPlayer = getNextTurnFirstPlayer();
-            if (nextTurnFirstPlayer == 0)
+
+            if (nextTurnFirstPlayer == 0){
                 buttonSelect.setEnabled(true);
+                MyGameBoard.enableAllMyCard();
+            }
             else
                 deliverPlayRight(nextTurnFirstPlayer);
 

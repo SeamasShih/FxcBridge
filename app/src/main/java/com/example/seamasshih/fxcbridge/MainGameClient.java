@@ -143,8 +143,17 @@ public class MainGameClient extends AppCompatActivity {
 
             sd.animateClose();
             buttonSelect.setEnabled(false);
-            MyGameBoard.enableAllMyCard();
+            MyGameBoard.removeHatAllMyCard();
             //  Rex 2018/03/22
+
+            if (isFirstRound){
+                MyGameBoard.setMajorColor(MyGameBoard.PlayedCard[4-playerIndex].getCardColor());
+                isFirstRound = false;
+            }else
+                MyGameBoard.setMajorColor(MyGameBoard.PlayedCard[MyGameBoard.getBridgeWinner()].getCardColor());
+
+            MyGameBoard.unableAllMyCard();
+
             deliverCardToServer(MyGameBoard.PlayedCard[0].getCardIndex());
         }
     };
@@ -291,11 +300,20 @@ public class MainGameClient extends AppCompatActivity {
                     break;
                 case SET_DELIVER_RIGHT:
                     buttonSelect.setEnabled(true);
+
                     if (isFirstRound){
                         MyGameBoard.judgeMyCardEnable(MyGameBoard.PlayedCard[4-playerIndex].getCardColor());
-                        isFirstRound =false;
-                    }else
-                        MyGameBoard.judgeMyCardEnable(MyGameBoard.PlayedCard[MyGameBoard.getBridgeWinner()].getCardColor());
+                    }else{
+                        if (MyGameBoard.getBridgeWinner() != 0){
+                            Log.v("TAG","I'm not first!");
+                            MyGameBoard.judgeMyCardEnable(MyGameBoard.PlayedCard[MyGameBoard.getBridgeWinner()].getCardColor());
+                        }else{
+                            MyGameBoard.enableAllMyCard();
+                            Log.v("TAG","I'm winner!!!!");
+                        }
+
+                    }
+
                     Log.i("TAG","BridgeGameClient:653");
                     if (!message.obj.toString().equals("")){
                         Log.i("TAG","BridgeGameClient:655");
@@ -324,7 +342,10 @@ public class MainGameClient extends AppCompatActivity {
 
     private void setOtherPlayerCard(int cardIndex){
         if (receiveCardCount == 0){
-            playerPosition = calculateNextTurnFirstPlayerPosition(nextTurnFirstPlayer);
+            if (isFirstRound)
+                playerPosition = calculateNextTurnFirstPlayerPosition(nextTurnFirstPlayer);
+            else
+                playerPosition = nextTurnFirstPlayer;
         }
 
         MyGameBoard.PlayedCard[playerPosition].setCardIndex(cardIndex);
@@ -351,6 +372,7 @@ public class MainGameClient extends AppCompatActivity {
 
     private int getNextTurnFirstPlayer(){
         MyGameBoard.judgeWhoAreBridgeWinner();
+        Log.v("TAG","getNextTurnFirstPlayer:354_getNextTurnFirstPlayer:"+MyGameBoard.getBridgeWinner());
         return MyGameBoard.getBridgeWinner();
     }
 
