@@ -1,5 +1,7 @@
 package com.example.seamasshih.fxcbridge;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
@@ -33,12 +35,12 @@ public class GameBoard {
     private int winBridgeCount[] = new int[4];
     private int myTeamBridgeNeedToWin;
     private int otherTeamBridgeNeedToWin;
-    private static int myPlayingCardIndex;
-    private static int playedCount;
+    private static int myPlayingCardIndex = 0;
+    private static int playedCount = 0;
     private static int[] cardWaitForDrawing = new int[52];
-    private static int bridgeWinner;
-    private static int priorColor;
-    private static int majorColor;
+    private static int bridgeWinner = 0;
+    private static int priorColor = 0;
+    private static int majorColor = 0;
     private static AnimatorSet dealCard = new AnimatorSet();
     @SuppressLint("ObjectAnimatorBinding")
     private ObjectAnimator sleep = ObjectAnimator.ofFloat(this,"translationX" , 0, 0).setDuration(500);
@@ -128,6 +130,7 @@ public class GameBoard {
         int maxCard = -1;
         boolean isPriorColorExist = false;
         for(int i = 0; i < PlayedCard.length; i++){
+            Log.d("TAG","player == "+i);
             if (isPriorColorExist) {
                 if (PlayedCard[i].getCardColor() == priorColor && PlayedCard[i].getCardIndex() > maxCard){
                     maxCard = PlayedCard[i].getCardIndex();
@@ -167,20 +170,19 @@ public class GameBoard {
                 else MyCardHat[i].getCardSite().setImageResource(R.drawable.available);
             }
     }
-    public void IAmTheFirstPlayer(){
+    public void enableAllMyCard(){
         for (int i = 0; i < MyCard.length; i++){
             if (MyCard[i].isPlayed()) continue;
             MyCardHat[i].getCardSite().setImageResource(R.drawable.available);
         }
     }
 
-    private void addWinBridge(int playerSite){
+    public void addWinBridge(int playerSite){
         winBridgeCount[playerSite]++;
-        WinBridge[playerSite].setImageLevel(winBridgeCount[winBridgeCount[playerSite]]);
     }
 
-    private boolean doesMyTeamWin(){return winBridgeCount[0]+winBridgeCount[2] >= myTeamBridgeNeedToWin;}
-    private boolean doesOtherTeamWin(){return winBridgeCount[1]+winBridgeCount[3] >= otherTeamBridgeNeedToWin;}
+    private boolean doesMyTeamWinThisGame(){return winBridgeCount[0]+winBridgeCount[2] >= myTeamBridgeNeedToWin;}
+    private boolean doesOtherTeamWinThisGame(){return winBridgeCount[1]+winBridgeCount[3] >= otherTeamBridgeNeedToWin;}
     
     public void animationCloseBridge(){
         closeBridge.playTogether(
@@ -189,6 +191,28 @@ public class GameBoard {
                 PlayedCard[2].getCardSite().getCloseBridgeAnimator(bridgeWinner),
                 PlayedCard[3].getCardSite().getCloseBridgeAnimator(bridgeWinner)
         );
+        closeBridge.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                WinBridge[bridgeWinner].setImageLevel(winBridgeCount[bridgeWinner]);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        closeBridge.start();
     }
 
 }

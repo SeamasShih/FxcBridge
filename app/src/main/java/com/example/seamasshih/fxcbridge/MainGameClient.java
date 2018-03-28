@@ -25,6 +25,7 @@ public class MainGameClient extends AppCompatActivity {
 
     //  Rex 2018/03/22 add
     public static Context context;
+    private boolean isFirstRound = true;
     private final static int SET_PLAYER_CARD = 1010, SET_FIRST_CARD = 1020, SET_DELIVER_RIGHT = 1030;
     private int setFirstCardIndex = 0, playerIndex, receiveCardCount = 0, nextTurnFirstPlayer = 0, playerPosition;
     private String idSign = "#";
@@ -142,7 +143,7 @@ public class MainGameClient extends AppCompatActivity {
 
             sd.animateClose();
             buttonSelect.setEnabled(false);
-
+            MyGameBoard.enableAllMyCard();
             //  Rex 2018/03/22
             deliverCardToServer(MyGameBoard.PlayedCard[0].getCardIndex());
         }
@@ -170,7 +171,7 @@ public class MainGameClient extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String mAction = intent.getAction();
             String receiveMessage = null, idText = null, content = null;
-            Message message = Message.obtain(), firstCardMsg;
+            Message message = Message.obtain(), firstCardMsg, otherCardMsg;
             StringTokenizer tokenizer;
             switch (mAction){
                 case "ServerMessage":
@@ -223,6 +224,14 @@ public class MainGameClient extends AppCompatActivity {
                             message.what = SET_PLAYER_CARD;
                             message.obj = tokenizer.nextToken().trim();
                             clientHandler.sendMessage(message);
+                            while (tokenizer.hasMoreTokens()){
+                                otherCardMsg = Message.obtain();
+                                if (tokenizer.nextToken().equals("SetSendCardRight")){
+                                    otherCardMsg.what = SET_DELIVER_RIGHT;
+                                    otherCardMsg.obj = "";
+                                    clientHandler.sendMessage(otherCardMsg);
+                                }
+                            }
                             break;
                     }
                     break;
@@ -282,7 +291,11 @@ public class MainGameClient extends AppCompatActivity {
                     break;
                 case SET_DELIVER_RIGHT:
                     buttonSelect.setEnabled(true);
-                    MyGameBoard.judgeMyCardEnable(MyGameBoard.PlayedCard[4-playerIndex].getCardColor());
+                    if (isFirstRound){
+                        MyGameBoard.judgeMyCardEnable(MyGameBoard.PlayedCard[4-playerIndex].getCardColor());
+                        isFirstRound =false;
+                    }else
+                        MyGameBoard.judgeMyCardEnable(MyGameBoard.PlayedCard[MyGameBoard.getBridgeWinner()].getCardColor());
                     Log.i("TAG","BridgeGameClient:653");
                     if (!message.obj.toString().equals("")){
                         Log.i("TAG","BridgeGameClient:655");
@@ -341,13 +354,18 @@ public class MainGameClient extends AppCompatActivity {
         return MyGameBoard.getBridgeWinner();
     }
 
+    private void endThisTurn(){
+        MyGameBoard.addWinBridge(MyGameBoard.getBridgeWinner());
+        MyGameBoard.animationCloseBridge();
+    }
+
     private void calculateCountAndPosition(){
         receiveCardCount++;
         if (receiveCardCount == 4){
             nextTurnFirstPlayer = getNextTurnFirstPlayer();
+            endThisTurn();
             receiveCardCount = 0;
         }
-
         playerPosition = (playerPosition + 1) % 4;
     }
 
