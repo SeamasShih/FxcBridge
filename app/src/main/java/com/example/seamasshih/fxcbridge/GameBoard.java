@@ -15,7 +15,8 @@ import android.widget.ImageView;
 
 public class GameBoard {
 
-    public GameBoard(){
+    private static GameBoard uniqueInstance;
+    private GameBoard(){
         for (int i = 0; i < MyCard.length; i++)
             MyCard[i] = new Card();
         for (int i = 0; i < MyCardHat.length; i++)
@@ -25,21 +26,28 @@ public class GameBoard {
         for (int i = 0; i <winBridgeCount.length; i++)
             winBridgeCount[i] = 0;
     }
+    public static GameBoard getInstance(){
+        if (uniqueInstance == null)
+            uniqueInstance = new GameBoard();
+        return uniqueInstance;
+    }
 
-    public static ImageView[] WinBridge = new ImageView[4];
-    public static Card[] MyCard = new Card[13];
-    public static CardHat[] MyCardHat = new CardHat[13];
-    public static PlayingCard[] PlayedCard = new PlayingCard[4];
+    public ImageView[] WinBridge = new ImageView[4];
+    public Card[] MyCard = new Card[13];
+    public CardHat[] MyCardHat = new CardHat[13];
+    public PlayingCard[] PlayedCard = new PlayingCard[4];
     private int winBridgeCount[] = new int[4];
     private int myTeamBridgeNeedToWin;
     private int otherTeamBridgeNeedToWin;
-    private static int myPlayingCardIndex;
-    private static int playedCount;
-    private static int[] cardWaitForDrawing = new int[52];
-    private static int bridgeWinner;
-    private static int priorColor;
-    private static int majorColor;
-    private static AnimatorSet dealCard = new AnimatorSet();
+    private int myPlayingCardIndex;
+    private int playedCount;
+    private int[] cardWaitForDrawing = new int[52];
+    private int bridgeWinner;
+    private int priorColor;
+    /* clubs 0 diamonds 1 hearts 2 spades 3 small 4 little 5 seven_down 6 medium_down 7 medium_up 8 seven_up 9 large 10 no_king 11 */
+
+    private int majorColor;
+    private AnimatorSet dealCard = new AnimatorSet();
     @SuppressLint("ObjectAnimatorBinding")
     private ObjectAnimator sleep = ObjectAnimator.ofFloat(this,"translationX" , 0, 0).setDuration(500);
     private AnimatorSet closeBridge = new AnimatorSet();
@@ -129,19 +137,19 @@ public class GameBoard {
         boolean isPriorColorExist = false;
         for(int i = 0; i < PlayedCard.length; i++){
             if (isPriorColorExist) {
-                if (PlayedCard[i].getCardColor() == priorColor && PlayedCard[i].getCardIndex() > maxCard){
-                    maxCard = PlayedCard[i].getCardIndex();
+                if (PlayedCard[i].getCardColor() == priorColor && PlayedCard[i].getCardPoint(priorColor) > maxCard){
+                    maxCard = PlayedCard[i].getCardPoint(priorColor);
                     bridgeWinner = i;
                 }
             }
             else{
                 if (PlayedCard[i].getCardColor() == priorColor){
                     isPriorColorExist = true;
-                    maxCard = PlayedCard[i].getCardIndex();
+                    maxCard = PlayedCard[i].getCardPoint(priorColor);
                     bridgeWinner = i;
                 }
-                else if (PlayedCard[i].getCardColor() == majorColor && PlayedCard[i].getCardIndex() > maxCard){
-                    maxCard = PlayedCard[i].getCardIndex();
+                else if (PlayedCard[i].getCardColor() == majorColor && PlayedCard[i].getCardPoint(priorColor) > maxCard){
+                    maxCard = PlayedCard[i].getCardPoint(priorColor);
                     bridgeWinner = i;
                 }
             }
@@ -181,7 +189,7 @@ public class GameBoard {
 
     private boolean doesMyTeamWin(){return winBridgeCount[0]+winBridgeCount[2] >= myTeamBridgeNeedToWin;}
     private boolean doesOtherTeamWin(){return winBridgeCount[1]+winBridgeCount[3] >= otherTeamBridgeNeedToWin;}
-    
+
     public void animationCloseBridge(){
         closeBridge.playTogether(
                 PlayedCard[0].getCardSite().getCloseBridgeAnimator(bridgeWinner),
