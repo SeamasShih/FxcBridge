@@ -103,11 +103,62 @@
         android:rotation="250"
         app:srcCompat="@drawable/win_bridge_level_list" />
 
+    <TextView
+        android:id="@+id/bidText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bidHearts"
+        android:layout_centerHorizontal="true"
+        android:text="___"
+        android:textSize="35dp" />
+
+    <Button
+        android:id="@+id/bidClub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:text="@string/Clubs1"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bidDiamonds"
+        android:layout_toRightOf="@+id/bidClub"
+        android:layout_alignParentBottom="true"
+        android:text="@string/Diamonds1"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bidHearts"
+        android:layout_toRightOf="@+id/bidDiamonds"
+        android:layout_alignParentBottom="true"
+        android:text="@string/Hearts1"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bidSpades"
+        android:layout_toRightOf="@+id/bidHearts"
+        android:layout_alignParentBottom="true"
+        android:text="@string/Spades1"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bidNoTrumps"
+        android:layout_toRightOf="@+id/bidSpades"
+        android:layout_alignParentBottom="true"
+        android:text="@string/NoTrump1"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bidPass"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:text="@string/Pass"/>
+
     <SlidingDrawer
         android:id="@+id/sd"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="100sp"
+        android:layout_height="250sp"
         android:content="@+id/content"
         android:handle="@+id/handle"
         android:orientation="vertical"
