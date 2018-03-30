@@ -15,7 +15,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SlidingDrawer;
-import android.widget.TextView;
 
 import com.example.seamasshih.fxcbridge.Socket.ClientConnect;
 import com.example.seamasshih.fxcbridge.Socket.ThreadList;
@@ -37,9 +36,8 @@ public class MainGameClient extends AppCompatActivity {
 
     GameBoard MyGameBoard = GameBoard.getInstance();
     PokerCardResource MyResource = new PokerCardResource();
-    Button buttonSelect,buttonSurrender,buttonSlidingHandler,btnBidClubs,btnBidDiamonds,btnBidHearts,btnBidSpades,btnBidNoTrumps,btnBidPass;
+    Button buttonSelect,buttonSurrender,buttonSlidingHandler;
     Player MyPlayer = new Player();
-    TextView textBid;
     SlidingDrawer sd;
 
     int[] playerIndexArray = {0 , 1 , 2 , 3};
@@ -47,7 +45,6 @@ public class MainGameClient extends AppCompatActivity {
     int[] idMyCardHatList = {R.id.poker1hat, R.id.poker2hat, R.id.poker3hat, R.id.poker4hat, R.id.poker5hat, R.id.poker6hat, R.id.poker7hat, R.id.poker8hat, R.id.poker9hat, R.id.poker10hat, R.id.poker11hat, R.id.poker12hat, R.id.poker13hat};
     int nowMyCardSelected;
     boolean isDealOut = false;
-    boolean isSend = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,14 +74,6 @@ public class MainGameClient extends AppCompatActivity {
         buttonSelect.setEnabled(false);
         buttonSurrender = findViewById(R.id.buttonSurrender);
         buttonSlidingHandler = findViewById(R.id.handle);
-        btnBidClubs = findViewById(R.id.bidClub);
-        btnBidDiamonds = findViewById(R.id.bidDiamonds);
-        btnBidHearts = findViewById(R.id.bidHearts);
-        btnBidSpades = findViewById(R.id.bidSpades);
-        btnBidNoTrumps = findViewById(R.id.bidNoTrumps);
-        btnBidPass = findViewById(R.id.bidPass);
-
-        textBid = findViewById(R.id.bidText);
 
         sd = findViewById(R.id.sd);
 
@@ -124,38 +113,9 @@ public class MainGameClient extends AppCompatActivity {
             MyGameBoard.MyCard[i].getCardSite().setOnClickListener(clickMyCard);
         buttonSelect.setOnClickListener(selectMyPlayingCard);
         buttonSurrender.setOnClickListener(surrenderThisGame);
-        btnBidClubs.setOnClickListener(bid);
-        btnBidDiamonds.setOnClickListener(bid);
-        btnBidHearts.setOnClickListener(bid);
-        btnBidSpades.setOnClickListener(bid);
-        btnBidNoTrumps.setOnClickListener(bid);
-        btnBidPass.setOnClickListener(bid);
         sd.setOnDrawerOpenListener(slidingOpen);
         sd.setOnDrawerCloseListener(slidingClose);
     }
-    Button.OnClickListener bid = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if(!isSend){
-                isSend = true;
-                switch (v.getId()){
-                    case R.id.bidClub:
-                        break;
-                    case R.id.bidDiamonds:
-                        break;
-                    case R.id.bidHearts:
-                        break;
-                    case R.id.bidSpades:
-                        break;
-                    case R.id.bidNoTrumps:
-                        break;
-                    case R.id.bidPass:
-                        break;
-                }
-                isSend = false;
-            }
-        }
-    };
     SlidingDrawer.OnDrawerOpenListener slidingOpen = new SlidingDrawer.OnDrawerOpenListener() {
         @Override
         public void onDrawerOpened() {
