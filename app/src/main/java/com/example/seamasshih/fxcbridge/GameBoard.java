@@ -41,13 +41,13 @@ public class GameBoard {
     private int winBridgeCount[] = new int[4];
     private int myTeamBridgeNeedToWin = 0;
     private int otherTeamBridgeNeedToWin = 0;
-    private static int myPlayingCardIndex = 0;
-    private static int playedCount = 0;
-    private static int[] cardWaitForDrawing = new int[52];
-    private static int bridgeWinner = 0;
-    private static int priorColor = 0;
-    private static int majorColor = 0;
-    private static AnimatorSet dealCard = new AnimatorSet();
+    private int myPlayingCardIndex = 0;
+    private int playedCount = 0;
+    private int[] cardWaitForDrawing = new int[52];
+    private int bridgeWinner = 0;
+    private int priorColor = 0;
+    private int majorColor = 0;
+    private AnimatorSet dealCard = new AnimatorSet();
 
     @SuppressLint("ObjectAnimatorBinding")
     private ObjectAnimator sleep = ObjectAnimator.ofFloat(this,"translationX" , 0, 0).setDuration(500);

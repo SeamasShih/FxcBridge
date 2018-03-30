@@ -28,9 +28,11 @@ public class MainGameServer extends AppCompatActivity {
 
     //  Rex 2018/03/22 add
     public static Context context;
-    private int playerIndex, receiveCardCount = 0, nextTurnFirstPlayer = 0, playerPosition;
+    private int playerIndex = 0, receiveCardCount = 0, nextTurnFirstPlayer = 0, playerPosition = 0;
+    private static final int myself = 0;
     private static final int SET_PLAYER_CARD = 1001;
-    private boolean isFirstRound = true;
+    private boolean isFirstRound = true, isServerTurn = true;
+    private String receiveCardIndex = null;
     ServerBroadcast serverBroadcast = new ServerBroadcast();
     ServerHandler serverHandler = new ServerHandler();
     //  Rex
@@ -41,7 +43,7 @@ public class MainGameServer extends AppCompatActivity {
     SlidingDrawer sd;
 
 
-    int[] playerIndexArray = {0 , 1 , 2 , 3}; //先留著，怕你會用到
+//    int[] playerIndexArray = {0 , 1 , 2 , 3}; //先留著，怕你會用到
     int[] idMyCardList = {R.id.poker1, R.id.poker2, R.id.poker3, R.id.poker4, R.id.poker5, R.id.poker6, R.id.poker7, R.id.poker8, R.id.poker9, R.id.poker10, R.id.poker11, R.id.poker12, R.id.poker13};
     int[] idMyCardHatList = {R.id.poker1hat, R.id.poker2hat, R.id.poker3hat, R.id.poker4hat, R.id.poker5hat, R.id.poker6hat, R.id.poker7hat, R.id.poker8hat, R.id.poker9hat, R.id.poker10hat, R.id.poker11hat, R.id.poker12hat, R.id.poker13hat};
     int nowMyCardSelected;
@@ -162,28 +164,25 @@ public class MainGameServer extends AppCompatActivity {
     Button.OnClickListener selectMyPlayingCard = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            MyGameBoard.PlayedCard[0].setCardIndex(MyGameBoard.getMyPlayingCardIndex());
-            MyGameBoard.PlayedCard[0].getCardSite().setImageResource(MyResource.cardTable[MyGameBoard.PlayedCard[0].getCardIndex()]);
+            if (nowMyCardSelected != -1) {
+                MyGameBoard.PlayedCard[0].setCardIndex(MyGameBoard.getMyPlayingCardIndex());
+                MyGameBoard.PlayedCard[0].getCardSite().setImageResource(MyResource.cardTable[MyGameBoard.PlayedCard[0].getCardIndex()]);
 
-            MyGameBoard.MyCardHat[nowMyCardSelected].getCardSite().setImageResource(R.drawable.available);
-            MyGameBoard.MyCard[nowMyCardSelected].getCardSite().setImageResource(MyResource.cardHatTable[MyGameBoard.MyCard[nowMyCardSelected].getCardIndex()]);
-            MyGameBoard.MyCard[nowMyCardSelected].setPlayed(true);
+                MyGameBoard.MyCardHat[nowMyCardSelected].getCardSite().setImageResource(R.drawable.available);
+                MyGameBoard.MyCard[nowMyCardSelected].getCardSite().setImageResource(MyResource.cardHatTable[MyGameBoard.MyCard[nowMyCardSelected].getCardIndex()]);
+                MyGameBoard.MyCard[nowMyCardSelected].setPlayed(true);
 
-            sd.animateClose();
-            buttonSelect.setEnabled(false);
-            MyGameBoard.removeHatAllMyCard();
 
-            //  Rex 2018/03/22
-            if (isFirstRound){
-                MyGameBoard.setMajorColor(MyGameBoard.PlayedCard[0].getCardColor());
-                isFirstRound = false;
+                //  Rex 2018/03/22
+                isServerTurn = true;
+                buttonSelect.setEnabled(false);     //出牌鍵關閉
+                MyGameBoard.removeHatAllMyCard();   //移除灰帽
+                MyGameBoard.unableAllMyCard();      //不能選牌
+                setUpThisTurnMajorCardColor();      //設定此輪Major Color
+                calculateReceiveCountAndPlayerPosition();
+                sd.animateClose();
+                nowMyCardSelected = -1;
             }
-            else
-                MyGameBoard.setMajorColor(MyGameBoard.PlayedCard[MyGameBoard.getBridgeWinner()].getCardColor());
-
-            MyGameBoard.unableAllMyCard();
-            deliverCardToAllClient(String.valueOf(MyGameBoard.PlayedCard[0].getCardIndex()));
-            calculateCountAndPosition();
 
         }
     };
@@ -216,13 +215,11 @@ public class MainGameServer extends AppCompatActivity {
                 case "ClientMessage":
                     playerIndex = bundle.getInt("PlayerIndex");
                     receiveMessage = bundle.getString("ClientMessage");
-//                    deliverPlayRight(calculateNextPlayer(playerIndex));
                     message.what = SET_PLAYER_CARD;
                     message.obj = receiveMessage;
                     serverHandler.sendMessage(message);
                     break;
                 case "playerIndex":
-                    Log.v("TAG","MainGameServer:221_playerIndex:"+intent.getIntExtra("playerIndex",0));
                     deliverFirstCardToClient(intent.getIntExtra("playerIndex",0));
                     break;
             }
@@ -233,15 +230,10 @@ public class MainGameServer extends AppCompatActivity {
         public void handleMessage(Message message){
             switch (message.what) {
                 case SET_PLAYER_CARD:
-                    if (receiveCardCount == 0){
-                        playerPosition = calculateNextTurnFirstPlayerPosition(nextTurnFirstPlayer);
-                        Log.v("TAG","MainGameServer:234_playerPosition:"+playerPosition);
-                    }
-                    Log.v("TAG","MainGameServer:236_playerPosition:"+playerPosition);
-                    MyGameBoard.PlayedCard[playerPosition].setCardIndex(Integer.valueOf(message.obj.toString().trim()));
+                    receiveCardIndex = message.obj.toString().trim();
+                    MyGameBoard.PlayedCard[playerPosition].setCardIndex(Integer.valueOf(receiveCardIndex));
                     MyGameBoard.PlayedCard[playerPosition].getCardSite().setImageResource(MyResource.cardTable[Integer.valueOf(message.obj.toString().trim())]);
-                    deliverCardToAllClient(message.obj.toString().trim());
-                    calculateCountAndPosition();
+                    calculateReceiveCountAndPlayerPosition();
                     break;
             }
         }
@@ -263,7 +255,6 @@ public class MainGameServer extends AppCompatActivity {
     private void deliverFirstCardToClient(int playerIndex)  {
         if (playerIndex != 0 && playerIndex <= Server.CLIENT_LIMITATION){
             for (int i = 13 * playerIndex; i <= 13 * playerIndex + 12; i++){
-                Log.i("TAG","MainGameServer:254, i:" + i + " cardList:" + MyGameBoard.getCardWaitForDrawingWithIndex(i));
                 ThreadList.getClientThread(playerIndex).sendMessage("SetFirstCard#"+String.valueOf(MyGameBoard.getCardWaitForDrawingWithIndex(i))+"#");
             }
         }
@@ -283,58 +274,64 @@ public class MainGameServer extends AppCompatActivity {
         }
     }
 
-    private void deliverCardToAllClient(String sendToClientCardIndex){
+    private void deliverCardToAllClient(){
+        String sendToClientCardIndex = null;
+        if (isServerTurn){
+            sendToClientCardIndex = String.valueOf(MyGameBoard.PlayedCard[0].getCardIndex());
+            isServerTurn = false;
+        }
+        else{
+            sendToClientCardIndex = receiveCardIndex;
+        }
         for (int playerIndex = 1; playerIndex <= Server.CLIENT_LIMITATION; playerIndex++){
             ThreadList.getClientThread(playerIndex).sendMessage("OtherPlayerCard#"+sendToClientCardIndex+"#");
         }
     }
 
-    private int calculateNextTurnFirstPlayerPosition(int nextTurnFirstPlayer){
-        for (int position = 0; position < playerIndexArray.length; position++){
-            if (nextTurnFirstPlayer == playerIndexArray[position]){
-                Log.v("TAG","calculateNextTurnFirstPlayerPosition:"+position);
-                return position;
-            }
-        }
-        return 0;
+    private void setUpThisTurnMajorCardColor(){
+        if (isFirstRound) {
+            MyGameBoard.setMajorColor(MyGameBoard.PlayedCard[0].getCardColor());
+            isFirstRound = false;
+        } else
+            MyGameBoard.setMajorColor(MyGameBoard.PlayedCard[MyGameBoard.getBridgeWinner()].getCardColor());
     }
 
-    private int getNextTurnFirstPlayer(){
+    private void getNextTurnFirstPlayer(){
         MyGameBoard.judgeWhoAreBridgeWinner();
-        Log.v("TAG","getNextTurnFirstPlayer:299_getNextTurnFirstPlayer:"+MyGameBoard.getBridgeWinner());
-        return MyGameBoard.getBridgeWinner();
+        nextTurnFirstPlayer = MyGameBoard.getBridgeWinner();
+        if (nextTurnFirstPlayer == myself){
+            buttonSelect.setEnabled(true);
+            MyGameBoard.enableAllMyCard();
+        }
+        else{
+            deliverPlayRight(nextTurnFirstPlayer);
+        }
     }
 
     private void endThisTurn(){
-        Log.v("TAG","endThisTurn:304");
         MyGameBoard.addWinBridge(MyGameBoard.getBridgeWinner());
         MyGameBoard.animationCloseBridge();
     }
 
-    private void calculateCountAndPosition(){
+
+    private void calculateReceiveCountAndPlayerPosition(){
         receiveCardCount++;
-        Log.v("TAG","MainGameServer:307_receiveCardCount:"+receiveCardCount);
         if (receiveCardCount == 4){
-            nextTurnFirstPlayer = getNextTurnFirstPlayer();
-
-            if (nextTurnFirstPlayer == 0){
-                buttonSelect.setEnabled(true);
-                MyGameBoard.enableAllMyCard();
-            }
-            else
-                deliverPlayRight(nextTurnFirstPlayer);
-
+            getNextTurnFirstPlayer();
             endThisTurn();
             receiveCardCount = 0;
-            Log.v("TAG","MainGameServer:311_nextTurnFirstPlayer:"+nextTurnFirstPlayer+" receiveCardCount:"+receiveCardCount);
         }else {
             deliverPlayRight(calculateNextPlayer(playerIndex));
-            Log.v("TAG","MainGameServer:314_playerIndex:"+playerIndex);
         }
 
-        playerPosition = (playerPosition + 1) % 4;
-        Log.v("TAG","MainGameServer:318_playerPosition:"+playerPosition);
+        deliverCardToAllClient();
 
+        if (receiveCardCount == 0){
+            playerIndex = 0;
+            playerPosition = nextTurnFirstPlayer;
+        }
+        else
+            playerPosition = (playerPosition + 1) % 4;
     }
 
 }
