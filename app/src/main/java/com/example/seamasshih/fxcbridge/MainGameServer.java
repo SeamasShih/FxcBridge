@@ -38,6 +38,7 @@ public class MainGameServer extends AppCompatActivity {
     //  Rex
 
     GameBoard MyGameBoard = GameBoard.getInstance();
+    Bid myBid = new Bid();
     PokerCardResource MyResource = new PokerCardResource();
     Button buttonSelect,buttonSurrender,buttonSlidingHandler;
     SlidingDrawer sd;
@@ -48,6 +49,7 @@ public class MainGameServer extends AppCompatActivity {
     int[] idMyCardHatList = {R.id.poker1hat, R.id.poker2hat, R.id.poker3hat, R.id.poker4hat, R.id.poker5hat, R.id.poker6hat, R.id.poker7hat, R.id.poker8hat, R.id.poker9hat, R.id.poker10hat, R.id.poker11hat, R.id.poker12hat, R.id.poker13hat};
     int nowMyCardSelected;
     boolean isDealOut = false;
+    boolean isPress = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +110,14 @@ public class MainGameServer extends AppCompatActivity {
 
         sd = findViewById(R.id.sd);
 
+        myBid.btnClubs = findViewById(R.id.btnClubs);
+        myBid.btnDiamonds = findViewById(R.id.btnDiamonds);
+        myBid.btnHearts = findViewById(R.id.btnHearts);
+        myBid.btnSpades = findViewById(R.id.btnSpades);
+        myBid.btnNoTrumps = findViewById(R.id.btnNoTrump);
+        myBid.btnPass = findViewById(R.id.btnPass);
+        myBid.bidText = findViewById(R.id.bidText);
+
         for (int i = 0; i < MyGameBoard.MyCard.length; i++) {
             MyGameBoard.MyCard[i].setCardSite((MyCardImageView) findViewById(idMyCardList[i]));
             MyGameBoard.MyCard[i].getCardSite().initialDealAnimator();
@@ -137,11 +147,40 @@ public class MainGameServer extends AppCompatActivity {
     void setOnListener() {
         for (int i = 0; i < MyGameBoard.MyCard.length; i++)
             MyGameBoard.MyCard[i].getCardSite().setOnClickListener(clickMyCard);
+        myBid.btnClubs.setOnClickListener(bid);
+        myBid.btnDiamonds.setOnClickListener(bid);
+        myBid.btnHearts.setOnClickListener(bid);
+        myBid.btnSpades.setOnClickListener(bid);
+        myBid.btnNoTrumps.setOnClickListener(bid);
+        myBid.btnPass.setOnClickListener(bid);
         buttonSelect.setOnClickListener(selectMyPlayingCard);
         buttonSurrender.setOnClickListener(surrenderThisGame);
         sd.setOnDrawerOpenListener(slidingOpen);
         sd.setOnDrawerCloseListener(slidingClose);
     }
+    Button.OnClickListener bid = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (!isPress){
+                isPress = true;
+                switch (v.getId()){
+                    case R.id.btnClubs:
+                    case R.id.btnDiamonds:
+                    case R.id.btnHearts:
+                    case R.id.btnSpades:
+                    case R.id.btnNoTrump:
+                    case R.id.btnPass:
+                }
+                isPress = false;
+                myBid.btnClubs.setEnabled(false);
+                myBid.btnDiamonds.setEnabled(false);
+                myBid.btnHearts.setEnabled(false);
+                myBid.btnSpades.setEnabled(false);
+                myBid.btnNoTrumps.setEnabled(false);
+                myBid.btnPass.setEnabled(false);
+            }
+        }
+    };
     SlidingDrawer.OnDrawerOpenListener slidingOpen = new SlidingDrawer.OnDrawerOpenListener() {
         @Override
         public void onDrawerOpened() {

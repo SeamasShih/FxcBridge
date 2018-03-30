@@ -103,6 +103,58 @@
         android:rotation="250"
         app:srcCompat="@drawable/win_bridge_level_list" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnClubs"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:text="♣1"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnDiamonds"
+        android:layout_toRightOf="@+id/btnClubs"
+        android:layout_alignParentBottom="true"
+        android:text="♦1"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnHearts"
+        android:layout_toRightOf="@+id/btnDiamonds"
+        android:layout_alignParentBottom="true"
+        android:text="♥1"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnSpades"
+        android:layout_toRightOf="@+id/btnHearts"
+        android:layout_alignParentBottom="true"
+        android:text="♠1"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnNoTrump"
+        android:layout_toRightOf="@+id/btnSpades"
+        android:layout_alignParentBottom="true"
+        android:text="NT1"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnPass"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:text="Pass"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnSpades"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/bidText"
+        android:text="___"
+        android:textSize="35sp"/>
+
+
     <SlidingDrawer
         android:id="@+id/sd"
         android:layout_width="wrap_content"
