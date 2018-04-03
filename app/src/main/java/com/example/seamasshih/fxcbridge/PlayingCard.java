@@ -21,7 +21,7 @@ public class PlayingCard {
     public int getCardColor(){return cardIndex/13;}
     public int getCardPoint(int priorColor){
         switch (priorColor){
-            case 4:
+            case 11:
                 return 12 - cardIndex%13;
             case 5:
                 return 12 - (cardIndex+1)%13;

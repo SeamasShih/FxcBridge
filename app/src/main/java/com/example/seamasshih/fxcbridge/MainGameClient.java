@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.SlidingDrawer;
 
 import com.example.seamasshih.fxcbridge.Socket.ClientConnect;
+import com.example.seamasshih.fxcbridge.Socket.Server;
+import com.example.seamasshih.fxcbridge.Socket.SocketClientFunction;
 import com.example.seamasshih.fxcbridge.Socket.ThreadList;
 
 import java.util.StringTokenizer;
@@ -25,13 +27,14 @@ public class MainGameClient extends AppCompatActivity {
 
     //  Rex 2018/03/22 add
     public static Context context;
-    private boolean isFirstRound = true, isNowMyTurn = false;
-    private final static int SET_PLAYER_CARD = 1010, SET_FIRST_CARD = 1020, SET_DELIVER_RIGHT = 1030;
-    private int setFirstCardIndex = 0, playerIndex, receiveCardCount = 0, nextTurnFirstPlayer = 0, playerPosition;
+    private boolean isFirstRound = true, isNowMyTurn = false, isGetBidValue = false;
+    private final static int SET_PLAYER_CARD = 1010, SET_FIRST_CARD = 1020, SET_DELIVER_RIGHT = 1030, SET_BID_RIGHT = 1040, SET_BID_VALUE = 1050, SET_BID_END = 1060, BID_PASS = -1;
+    private int setFirstCardIndex = 0, playerIndex, receiveCardCount = 0, nextTurnFirstPlayer = 0, playerPosition, firstRoundPlayerPosition;
     private static final int myself = 0, serverPosition = 0;
     private String idSign = "#";
     ClientBroadcast clientBroadcast = new ClientBroadcast();
     ClientHandler clientHandler = new ClientHandler();
+    SocketClientFunction clientFunc = SocketClientFunction.getInstance();
     //  Rex
 
     GameBoard MyGameBoard = GameBoard.getInstance();
@@ -77,12 +80,12 @@ public class MainGameClient extends AppCompatActivity {
         buttonSurrender = findViewById(R.id.buttonSurrender);
         buttonSlidingHandler = findViewById(R.id.handle);
 
-        myBid.btnClubs = findViewById(R.id.btnClubs);
-        myBid.btnDiamonds = findViewById(R.id.btnDiamonds);
-        myBid.btnHearts = findViewById(R.id.btnHearts);
-        myBid.btnSpades = findViewById(R.id.btnSpades);
-        myBid.btnNoTrumps = findViewById(R.id.btnNoTrump);
-        myBid.btnPass = findViewById(R.id.btnPass);
+        myBid.bidButtonArray[0] = findViewById(R.id.btnClubs);
+        myBid.bidButtonArray[1] = findViewById(R.id.btnDiamonds);
+        myBid.bidButtonArray[2] = findViewById(R.id.btnHearts);
+        myBid.bidButtonArray[3] = findViewById(R.id.btnSpades);
+        myBid.bidButtonArray[4] = findViewById(R.id.btnNoTrump);
+        myBid.bidButtonArray[5] = findViewById(R.id.btnPass);
         myBid.bidText = findViewById(R.id.bidText);
 
         sd = findViewById(R.id.sd);
@@ -116,17 +119,22 @@ public class MainGameClient extends AppCompatActivity {
         MyGameBoard.WinBridge[3] = findViewById(R.id.rightWinBridge);
         for (int i = 0; i < MyGameBoard.WinBridge.length; i++)
             MyGameBoard.WinBridge[i].setImageLevel(0);
+
+        myBid.setButtonDisable();
+        MyGameBoard.unableAllMyCard();
     }
 
     void setOnListener() {
         for (int i = 0; i < MyGameBoard.MyCard.length; i++)
             MyGameBoard.MyCard[i].getCardSite().setOnClickListener(clickMyCard);
-        myBid.btnClubs.setOnClickListener(bid);
-        myBid.btnDiamonds.setOnClickListener(bid);
-        myBid.btnHearts.setOnClickListener(bid);
-        myBid.btnSpades.setOnClickListener(bid);
-        myBid.btnNoTrumps.setOnClickListener(bid);
-        myBid.btnPass.setOnClickListener(bid);
+
+        myBid.bidButtonArray[0].setOnClickListener(bid);
+        myBid.bidButtonArray[1].setOnClickListener(bid);
+        myBid.bidButtonArray[2].setOnClickListener(bid);
+        myBid.bidButtonArray[3].setOnClickListener(bid);
+        myBid.bidButtonArray[4].setOnClickListener(bid);
+        myBid.bidButtonArray[5].setOnClickListener(bid);
+
         buttonSelect.setOnClickListener(selectMyPlayingCard);
         buttonSurrender.setOnClickListener(surrenderThisGame);
         sd.setOnDrawerOpenListener(slidingOpen);
@@ -135,23 +143,34 @@ public class MainGameClient extends AppCompatActivity {
     Button.OnClickListener bid = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            int bidValue = 0;
             if (!isPress){
                 isPress = true;
                 switch (v.getId()){
                     case R.id.btnClubs:
+                        bidValue = (Integer.valueOf(myBid.bidButtonArray[0].getText().toString().substring(1,2)) * 10);
+                        break;
                     case R.id.btnDiamonds:
+                        bidValue = (Integer.valueOf(myBid.bidButtonArray[1].getText().toString().substring(1,2)) * 10) + 1;
+                        break;
                     case R.id.btnHearts:
+                        bidValue = (Integer.valueOf(myBid.bidButtonArray[2].getText().toString().substring(1,2)) * 10) + 2;
+                        break;
                     case R.id.btnSpades:
+                        bidValue = (Integer.valueOf(myBid.bidButtonArray[3].getText().toString().substring(1,2)) * 10) + 3;
+                        break;
                     case R.id.btnNoTrump:
+                        bidValue = (Integer.valueOf(myBid.bidButtonArray[4].getText().toString().substring(2,3)) * 10) + 4;
+                        break;
                     case R.id.btnPass:
+                        bidValue = BID_PASS;
+                        break;
                 }
                 isPress = false;
-                myBid.btnClubs.setEnabled(false);
-                myBid.btnDiamonds.setEnabled(false);
-                myBid.btnHearts.setEnabled(false);
-                myBid.btnSpades.setEnabled(false);
-                myBid.btnNoTrumps.setEnabled(false);
-                myBid.btnPass.setEnabled(false);
+                myBid.setButtonDisable();
+                clientFunc.deliverBidValueToServer(bidValue);
+                myBid.myBid = bidValue;
+                Log.d("TAG","myBid.myBid:"+myBid.myBid);
             }
         }
     };
@@ -176,7 +195,9 @@ public class MainGameClient extends AppCompatActivity {
     Button.OnClickListener selectMyPlayingCard = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            Log.d("TAG","buttonSelect in, nowMyCardSelected:" + nowMyCardSelected);
             if (nowMyCardSelected != -1) {
+                Log.d("TAG","buttonSelect IF in");
                 MyGameBoard.PlayedCard[MyPlayer.getNowPlayer()].setCardIndex(MyGameBoard.getMyPlayingCardIndex());
                 MyGameBoard.PlayedCard[MyPlayer.getNowPlayer()].getCardSite().setImageResource(MyResource.cardTable[MyGameBoard.PlayedCard[0].getCardIndex()]);
 
@@ -192,6 +213,7 @@ public class MainGameClient extends AppCompatActivity {
                 setUpThisTurnMajorCardColor();
                 deliverCardToServer(MyGameBoard.PlayedCard[0].getCardIndex());
                 sd.animateClose();
+                nowMyCardSelected = -1;
             }
         }
     };
@@ -217,38 +239,39 @@ public class MainGameClient extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String mAction = intent.getAction();
-            String receiveMessage = null, idText = null, content = null;
-            Message message = Message.obtain(), firstCardMsg, otherCardMsg;
+            String receiveMessage, idText, content;
+            Message message = Message.obtain(), secondMessage;
             StringTokenizer tokenizer;
             switch (mAction){
                 case "ServerMessage":
                     receiveMessage = intent.getStringExtra("ServerMessage");
-                    tokenizer = new StringTokenizer(receiveMessage,idSign);
+                    Log.v("TAG","rcMsg:"+receiveMessage);
+                    tokenizer = new StringTokenizer(receiveMessage, idSign);
                     idText = tokenizer.nextToken();
                     switch (idText){
                         case "SetFirstCard":
                             while (tokenizer.hasMoreTokens()){
-                                firstCardMsg = Message.obtain();
+                                secondMessage = Message.obtain();
                                 content = tokenizer.nextToken();
                                 if (content.equals("SetPlayerIndex")){
                                     playerIndex = Integer.valueOf(tokenizer.nextToken().trim());
                                 }
                                 else if (!content.equals("SetFirstCard")){
-                                    firstCardMsg.what = SET_FIRST_CARD;
-                                    firstCardMsg.obj = content;
-                                    clientHandler.sendMessage(firstCardMsg);
+                                    secondMessage.what = SET_FIRST_CARD;
+                                    secondMessage.obj = content;
+                                    clientHandler.sendMessage(secondMessage);
                                 }
                             }
                             break;
                         case "SetPlayerIndex":
                             playerIndex = Integer.valueOf(tokenizer.nextToken().trim());
                             while (tokenizer.hasMoreTokens()){
-                                firstCardMsg = Message.obtain();
+                                secondMessage = Message.obtain();
                                 content = tokenizer.nextToken();
                                 if (!content.equals("SetFirstCard")){
-                                    firstCardMsg.what = SET_FIRST_CARD;
-                                    firstCardMsg.obj = content;
-                                    clientHandler.sendMessage(firstCardMsg);
+                                    secondMessage.what = SET_FIRST_CARD;
+                                    secondMessage.obj = content;
+                                    clientHandler.sendMessage(secondMessage);
                                 }
                             }
                             setPlayerIndexArray(playerIndex);
@@ -269,13 +292,48 @@ public class MainGameClient extends AppCompatActivity {
                             message.obj = tokenizer.nextToken().trim();
                             clientHandler.sendMessage(message);
                             while (tokenizer.hasMoreTokens()){
-                                otherCardMsg = Message.obtain();
+                                secondMessage = Message.obtain();
                                 if (tokenizer.nextToken().equals("SetSendCardRight")){
-                                    otherCardMsg.what = SET_DELIVER_RIGHT;
-                                    otherCardMsg.obj = "";
-                                    clientHandler.sendMessage(otherCardMsg);
+                                    secondMessage.what = SET_DELIVER_RIGHT;
+                                    secondMessage.obj = "";
+                                    clientHandler.sendMessage(secondMessage);
                                 }
                             }
+                            break;
+                        case "SetBidRight":
+                            message.what = SET_BID_RIGHT;
+                            secondMessage = Message.obtain();
+                            while (tokenizer.hasMoreTokens()){
+                                content = tokenizer.nextToken();
+                                Log.d("TAG","content:"+content);
+                                if (content.equals("SetBidValue")){
+                                    secondMessage.what = SET_BID_VALUE;
+                                    secondMessage.obj = tokenizer.nextToken();
+                                    Log.v("TAG","secondMessage.what:" + secondMessage.what + " ,secondMessage.obj:"+secondMessage.obj);
+                                }
+                            }
+                            clientHandler.sendMessage(message);
+                            clientHandler.sendMessage(secondMessage);
+                            break;
+                        case "SetBidValue":
+                            message.what = SET_BID_VALUE;
+                            message.obj = tokenizer.nextToken();
+                            Log.v("TAG","message.what:" + message.what + " message.obj:"+ message.obj);
+                            secondMessage = Message.obtain();
+                            while (tokenizer.hasMoreTokens()){
+                                if (tokenizer.nextToken().equals("SetBidRight")){
+                                    secondMessage.what = SET_BID_RIGHT;
+                                    secondMessage.obj = "";
+                                    Log.v("TAG","secondMessage.what:" + secondMessage.what + " ,secondMessage.obj:"+secondMessage.obj);
+                                }
+                            }
+                            clientHandler.sendMessage(message);
+                            clientHandler.sendMessage(secondMessage);
+                            break;
+                        case "SetBidEnd":
+                            message.what = SET_BID_END;
+                            message.obj = tokenizer.nextToken();
+                            clientHandler.sendMessage(message);
                             break;
                     }
                     break;
@@ -332,10 +390,37 @@ public class MainGameClient extends AppCompatActivity {
                     break;
                 case SET_DELIVER_RIGHT:
                     buttonSelect.setEnabled(true);
+                    MyGameBoard.enableAllMyCard();
                     isNowMyTurn = true;
                     if (!message.obj.toString().equals("")){
                         setOtherPlayerCard(Integer.valueOf(message.obj.toString().trim()));
                     }
+                    break;
+                case SET_BID_RIGHT:
+                    Log.i("TAG","Button Enable");
+                    while (isGetBidValue){
+                        if (myBid.myBid == myBid.nowBid){
+                            clientFunc.deliverBidEndToServer();
+                        }
+                        isGetBidValue = false;
+                    }
+                    myBid.setButtonEnable();
+                    break;
+                case SET_BID_VALUE:
+                    Log.i("TAG","Bid Value:" + message.obj.toString().trim());
+                    myBid.setNowBid(Integer.valueOf(message.obj.toString().trim()));
+                    myBid.setString();
+                    isGetBidValue = true;
+                    break;
+                case SET_BID_END:
+                    int firstRoundPlayer = Integer.valueOf(message.obj.toString().trim()) + 1;
+                    if (firstRoundPlayer > Server.CLIENT_LIMITATION)
+                        firstRoundPlayer = 0;
+                    firstRoundPlayerPosition = calculatePlayerPosition(firstRoundPlayer);
+                    myBid.setBidUnitsInvisible();
+                    MyGameBoard.setPriorColor(myBid.nowBid % 10);
+                    clientFunc.bidResultMessage(MainGameClient.this, myBid, Integer.valueOf(message.obj.toString().trim()));
+                    playerPosition = firstRoundPlayerPosition;
                     break;
             }
         }
@@ -354,7 +439,7 @@ public class MainGameClient extends AppCompatActivity {
     }
 
     private void deliverCardToServer(int cardIndex){
-        ThreadList.getServerThread().sendMessage(String.valueOf(cardIndex));
+        ThreadList.getServerThread().sendMessage("SetPlayerCard#" + String.valueOf(cardIndex)+"#");
     }
 
     private void setOtherPlayerCard(int cardIndex){
@@ -368,11 +453,10 @@ public class MainGameClient extends AppCompatActivity {
 
     private void limitCanUseCardColor(){
         if (isFirstRound){
-            MyGameBoard.judgeMyCardEnable(MyGameBoard.PlayedCard[4-playerIndex].getCardColor());
-        }else{
-            if (MyGameBoard.getBridgeWinner() != 0){
+            MyGameBoard.judgeMyCardEnable(MyGameBoard.PlayedCard[firstRoundPlayerPosition].getCardColor());
+        }else {
+            if (MyGameBoard.getBridgeWinner() != 0)
                 MyGameBoard.judgeMyCardEnable(MyGameBoard.PlayedCard[MyGameBoard.getBridgeWinner()].getCardColor());
-            }
         }
     }
 
@@ -380,12 +464,11 @@ public class MainGameClient extends AppCompatActivity {
         for (int i = 0; i < playerIndexArray.length; i++){
             playerIndexArray[i] = (playerIndexArray[i] + playerIndex) % 4;
         }
-        playerPosition = calculatePlayerPosition(serverPosition);
     }
 
-    private int calculatePlayerPosition(int nextTurnFirstPlayer){
+    private int calculatePlayerPosition(int player){
         for (int position = 0; position < playerIndexArray.length; position++){
-            if (nextTurnFirstPlayer == playerIndexArray[position]){
+            if (player == playerIndexArray[position]){
                 return position;
             }
         }
@@ -394,7 +477,7 @@ public class MainGameClient extends AppCompatActivity {
 
     private void setUpThisTurnMajorCardColor(){
         if (isFirstRound){
-            MyGameBoard.setMajorColor(MyGameBoard.PlayedCard[4-playerIndex].getCardColor());
+            MyGameBoard.setMajorColor(MyGameBoard.PlayedCard[firstRoundPlayerPosition].getCardColor());
         }else
             MyGameBoard.setMajorColor(MyGameBoard.PlayedCard[MyGameBoard.getBridgeWinner()].getCardColor());
     }

@@ -125,24 +125,27 @@ public class GameBoard {
     public void playDealCard(){dealCard.start();}
     public AnimatorSet getDealCard(){return dealCard;}
 
-    public void setPriorColor(int priorColor){ this.priorColor = priorColor;}
+    public void setPriorColor(int priorColor){
+        this.priorColor = priorColor;
+    }
     public int getPriorColor(){return priorColor;}
 
     public int getMajorColor(){return majorColor;}
     public void setMajorColor(int majorColor){this.majorColor = majorColor;}
 
+    public void setBridgeWinner(int bridgeWinner){
+        this.bridgeWinner = bridgeWinner;
+    }
     public int getBridgeWinner(){return bridgeWinner;}
     public void judgeWhoAreBridgeWinner(){
         bridgeWinner = 0;
         int maxCard = -1;
         boolean isPriorColorExist = false;
         for(int i = 0; i < PlayedCard.length; i++){
-            Log.d("TAG","player == "+i);
             if (isPriorColorExist) {
                 if (PlayedCard[i].getCardColor() == priorColor && PlayedCard[i].getCardPoint(priorColor) > maxCard){
                     maxCard = PlayedCard[i].getCardPoint(priorColor);
                     bridgeWinner = i;
-                    Log.d("TAG","status 1");
                 }
             }
             else{
@@ -150,12 +153,10 @@ public class GameBoard {
                     isPriorColorExist = true;
                     maxCard = PlayedCard[i].getCardPoint(priorColor);
                     bridgeWinner = i;
-                    Log.d("TAG","status 2");
                 }
                 else if (PlayedCard[i].getCardColor() == majorColor && PlayedCard[i].getCardPoint(priorColor) > maxCard){
                     maxCard = PlayedCard[i].getCardPoint(priorColor);
                     bridgeWinner = i;
-                    Log.d("TAG","status 3");
                 }
             }
         }

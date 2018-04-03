@@ -22,4 +22,11 @@
     <string name="PlayerTextRight">Player 3</string>
     <string name="Start">Start</string>
     <string name="introduction">Please select your role.</string>
+    <string name="btn_club">♣1</string>
+    <string name="btn_diamond">♦1</string>
+    <string name="btn_heart">♥1</string>
+    <string name="btn_spade">♠1</string>
+    <string name="btn_no_trump">NT1</string>
+    <string name="btn_pass">Pass</string>
+    <string name="txt_bid">___</string>
 </resources>

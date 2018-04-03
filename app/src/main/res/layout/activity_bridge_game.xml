@@ -109,49 +109,49 @@
         android:id="@+id/btnClubs"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:text="♣1"/>
+        android:text="@string/btn_club"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btnDiamonds"
         android:layout_toRightOf="@+id/btnClubs"
         android:layout_alignParentBottom="true"
-        android:text="♦1"/>
+        android:text="@string/btn_diamond"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btnHearts"
         android:layout_toRightOf="@+id/btnDiamonds"
         android:layout_alignParentBottom="true"
-        android:text="♥1"/>
+        android:text="@string/btn_heart"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btnSpades"
         android:layout_toRightOf="@+id/btnHearts"
         android:layout_alignParentBottom="true"
-        android:text="♠1"/>
+        android:text="@string/btn_spade"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btnNoTrump"
         android:layout_toRightOf="@+id/btnSpades"
         android:layout_alignParentBottom="true"
-        android:text="NT1"/>
+        android:text="@string/btn_no_trump"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btnPass"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:text="Pass"/>
+        android:text="@string/btn_pass"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/btnSpades"
         android:layout_centerHorizontal="true"
         android:id="@+id/bidText"
-        android:text="___"
+        android:text="@string/txt_bid"
         android:textSize="35sp"/>
 
 
