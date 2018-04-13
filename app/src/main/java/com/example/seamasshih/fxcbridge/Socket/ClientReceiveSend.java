@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.example.seamasshih.fxcbridge.MainGameClient;
+import com.example.seamasshih.fxcbridge.MainGameClientV2;
 
 import java.io.DataInputStream;
 import java.io.IOException;

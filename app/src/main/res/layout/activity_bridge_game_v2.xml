@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainGameServer"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="@android:color/transparent"
+    android:clipChildren="false">
+
+
+    <com.example.seamasshih.fxcbridge.MyView
+        android:id="@+id/myView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.example.seamasshih.fxcbridge.PlayingCardImageView
+        android:id="@+id/myPlayingCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:srcCompat="@drawable/poker_card_58" />
+
+    <com.example.seamasshih.fxcbridge.PlayingCardImageView
+        android:id="@+id/leftPlayingCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/myPlayingCard"
+        android:layout_marginBottom="15sp"
+        android:layout_toStartOf="@+id/myPlayingCard"
+        android:adjustViewBounds="true"
+        android:maxHeight="80sp"
+        android:rotation="90"
+        app:srcCompat="@drawable/poker_card_58" />
+
+    <com.example.seamasshih.fxcbridge.PlayingCardImageView
+        android:id="@+id/partnerPlayingCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:adjustViewBounds="true"
+        android:maxHeight="80sp"
+        android:layout_centerHorizontal="true"
+        app:srcCompat="@drawable/poker_card_58" />
+
+    <com.example.seamasshih.fxcbridge.PlayingCardImageView
+        android:id="@+id/rightPlayingCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/myPlayingCard"
+        android:layout_marginBottom="15sp"
+        android:layout_toRightOf="@+id/myPlayingCard"
+        android:adjustViewBounds="true"
+        android:maxHeight="80sp"
+        android:rotation="270"
+        android:layout_toEndOf="@+id/myPlayingCard"
+        app:srcCompat="@drawable/poker_card_58" />
+
+    <ImageView
+        android:id="@+id/myWinBridge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/myPlayingCard"
+        app:srcCompat="@drawable/win_bridge_level_list" />
+
+    <ImageView
+        android:id="@+id/leftWinBridge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/partnerPlayingCard"
+        android:layout_marginTop="50dp"
+        android:layout_toStartOf="@+id/leftPlayingCard"
+        android:layout_marginRight="80sp"
+        android:adjustViewBounds="true"
+        android:maxHeight="70sp"
+        android:rotation="110"
+        app:srcCompat="@drawable/win_bridge_level_list" />
+
+    <ImageView
+        android:id="@+id/partnerWinBridge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/partnerPlayingCard"
+        android:layout_toStartOf="@+id/partnerPlayingCard"
+        android:adjustViewBounds="true"
+        android:layout_marginTop="-8sp"
+        android:maxHeight="60sp"
+        android:rotation="180"
+        app:srcCompat="@drawable/win_bridge_level_list" />
+
+    <ImageView
+        android:id="@+id/rightWinBridge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/partnerPlayingCard"
+        android:layout_marginEnd="55dp"
+        android:layout_marginTop="28dp"
+        android:adjustViewBounds="true"
+        android:maxHeight="70sp"
+        android:rotation="250"
+        app:srcCompat="@drawable/win_bridge_level_list" />
+
+
+    <com.example.seamasshih.fxcbridge.View.MyCardSector
+        android:id="@+id/MyCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+    <com.example.seamasshih.fxcbridge.View.BidButton
+        android:id="@+id/btnClubs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.example.seamasshih.fxcbridge.View.BidButton
+        android:id="@+id/btnDiamonds"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/btnClubs"/>
+
+    <com.example.seamasshih.fxcbridge.View.BidButton
+        android:id="@+id/btnHearts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/btnDiamonds"/>
+
+    <com.example.seamasshih.fxcbridge.View.BidButton
+        android:id="@+id/btnSpades"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/btnClubs"
+        android:layout_marginStart="175px"/>
+
+    <com.example.seamasshih.fxcbridge.View.BidButton
+        android:id="@+id/btnNoTrump"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnClubs"
+        android:layout_toRightOf="@id/btnSpades"/>
+
+    <com.example.seamasshih.fxcbridge.View.BidButton
+        android:id="@+id/btnPass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bidText"
+        android:layout_below="@id/btnClubs"
+        android:layout_toRightOf="@id/btnNoTrump"
+        android:text="@string/txt_bid"
+        android:textSize="35sp"/>
+
+</RelativeLayout>

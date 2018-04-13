@@ -25,7 +25,13 @@
             android:name=".MainGameServer"
             android:screenOrientation="landscape" />
         <activity
+            android:name=".MainGameServerV2"
+            android:screenOrientation="landscape" />
+        <activity
             android:name=".MainGameClient"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".MainGameClientV2"
             android:screenOrientation="landscape" />
         <activity
             android:name=".Socket.RoleSelect"

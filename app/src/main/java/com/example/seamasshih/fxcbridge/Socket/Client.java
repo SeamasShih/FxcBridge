@@ -8,6 +8,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.example.seamasshih.fxcbridge.MainGameClient;
+import com.example.seamasshih.fxcbridge.MainGameClientV2;
 import com.example.seamasshih.fxcbridge.R;
 
 public class Client extends AppCompatActivity {

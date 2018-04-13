@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.seamasshih.fxcbridge.MainGameServer;
+import com.example.seamasshih.fxcbridge.MainGameServerV2;
 import com.example.seamasshih.fxcbridge.R;
 
 import java.io.IOException;
