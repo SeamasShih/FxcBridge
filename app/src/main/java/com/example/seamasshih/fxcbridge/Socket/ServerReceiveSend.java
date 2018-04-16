@@ -61,6 +61,7 @@ public class ServerReceiveSend extends Thread {
             public void run() {
                 printWriter.print(message);
                 printWriter.flush();
+                Log.d("TAG","Use for Temp Save");
             }
         }).start();
     }
