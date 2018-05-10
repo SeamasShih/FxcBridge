@@ -77,7 +77,7 @@ public class Server extends AppCompatActivity {
     }
 
     public void btnServerListener(View view) {
-        Intent intent = new Intent(this, MainGameServer.class);
+        Intent intent = new Intent(this, MainGameServerV2.class);
         intent.putExtra("port",getServerPort(edtServerPort.getText().toString()));
         startActivity(intent);
         finish();

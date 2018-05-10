@@ -47,7 +47,7 @@ public class ServerReceiveSend extends Thread {
                     bundle.putInt("PlayerIndex",playerIndex);
                     bundle.putString("ClientMessage",receiveMessage);
                     intent.putExtras(bundle);
-                    MainGameServer.context.sendBroadcast(intent);
+                    MainGameServerV2.context.sendBroadcast(intent);
                 }
             }catch (IOException e){
                 e.printStackTrace();
@@ -76,7 +76,7 @@ public class ServerReceiveSend extends Thread {
     }
 
     private void sendPlayerIndexToServer(int playerIndex){
-        MainGameServer.context.sendBroadcast(new Intent("playerIndex").putExtra("playerIndex",playerIndex));
+        MainGameServerV2.context.sendBroadcast(new Intent("playerIndex").putExtra("playerIndex",playerIndex));
     }
 
     public static void sendPlayerIndexToClient(int playerIndex){

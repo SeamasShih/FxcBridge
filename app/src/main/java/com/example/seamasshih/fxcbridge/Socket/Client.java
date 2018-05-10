@@ -36,7 +36,7 @@ public class Client extends AppCompatActivity {
     }
 
     public void btnClientListener(View view) {
-        Intent intent = new Intent(this, MainGameClient.class);
+        Intent intent = new Intent(this, MainGameClientV2.class);
         Bundle bundle = new Bundle();
         bundle.putString("ip",edtIP.getText().toString());
         bundle.putInt("port", getPort(edtPort.getText().toString()));

@@ -169,17 +169,17 @@ public class MyCardSector extends View {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (!canPlay){
-            if (event.getActionMasked() == MotionEvent.ACTION_DOWN)
-                radius -= viewSideLength[1]*2/5;
-            else if (event.getActionMasked() == MotionEvent.ACTION_UP)
-                radius += viewSideLength[1]*2/5;
-            invalidate();
-            return true;
-        }
+//        if (!canPlay){
+//            if (event.getActionMasked() == MotionEvent.ACTION_DOWN)
+//                radius -= viewSideLength[1]*2/5;
+//            else if (event.getActionMasked() == MotionEvent.ACTION_UP)
+//                radius += viewSideLength[1]*2/5;
+//            invalidate();
+//            return true;
+//        }
         fgr[0] = event.getX();
         fgr[1] = event.getY();
-        if (event.getActionMasked() == MotionEvent.ACTION_DOWN){
+        if (event.getActionMasked() == MotionEvent.ACTION_DOWN){Log.v("TAG","請善用中文1");
             radius -= viewSideLength[1]*2/5;
             for (int i = 0; i < cardRegion.length; i ++){
                 if (cardRegion[i].contains((int)(fgr[0]),(int)(fgr[1])) && cardAvailability[i]){
@@ -187,7 +187,7 @@ public class MyCardSector extends View {
                 }
             }
         }
-        else if (event.getActionMasked() == MotionEvent.ACTION_MOVE){
+        else if (event.getActionMasked() == MotionEvent.ACTION_MOVE){Log.v("TAG","請善用中文2");
             for (int i = 0; i < cardRegion.length; i ++){
                 if (cardRegion[i].contains((int)(fgr[0]),(int)(fgr[1])) && !cardRegion[i].isEmpty() && cardAvailability[i]){
                     touching = i;
@@ -202,7 +202,7 @@ public class MyCardSector extends View {
                 radius += viewSideLength[1] * 2 / 5;
             }
         }
-        else if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+        else if (event.getActionMasked() == MotionEvent.ACTION_UP) {Log.v("TAG","請善用中文3");
             if (isSel && touching != -1) {
                 playedCard[touching] = true;
                 n -= 1;
@@ -220,6 +220,7 @@ public class MyCardSector extends View {
             touching = -1;
         }
         invalidate();
+        Log.v("TAG","請善用中文");
         return super.onTouchEvent(event);
     }
 
@@ -235,11 +236,13 @@ public class MyCardSector extends View {
                 cardAvailability[i] = false;
             }
         }
-        if (playOtherColor)
-            for (int i = 0; i < myCardList.length; i++){
+        if (playOtherColor) {
+            for (int i = 0; i < myCardList.length; i++) {
                 if (playedCard[i]) continue;
                 cardAvailability[i] = true;
             }
+        }
+        invalidate();
     }
 
     public void enableAllMyCard(){
@@ -247,12 +250,14 @@ public class MyCardSector extends View {
             if (playedCard[i]) continue;
             cardAvailability[i] = true;
         }
+        invalidate();
     }
     public void unableAllMyCard(){
         for (int i = 0; i < myCardList.length; i++){
             if (playedCard[i]) continue;
             cardAvailability[i] = false;
         }
+        invalidate();
     }
 
     @SuppressLint("DrawAllocation")

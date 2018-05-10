@@ -118,6 +118,7 @@ public class BidButton extends View {
         textPaint.setColor(Color.BLACK);
         textPaint.setAntiAlias(true);
         textPaint.setTextSize(textSize);
+        textPaint.setTextAlign(Paint.Align.CENTER);
         animatorOpen = ValueAnimator.ofFloat(viewLength*centerRate/2,radius).setDuration(100);
         animatorOpen.setInterpolator(new OvershootInterpolator());
         animatorOpen.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -172,6 +173,7 @@ public class BidButton extends View {
     }
     public void setCenterText(String centerText){
         this.centerText = centerText;
+        invalidate();
     }
     public float getStartAngle(){return startAngle;}
     public void setStartAngle(float startAngle){
@@ -226,6 +228,7 @@ public class BidButton extends View {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        Log.e("Seamas","why");
         if (!btnEnable) return true;
         if (event.getActionMasked() == MotionEvent.ACTION_DOWN){
             isPressed = true;
@@ -244,8 +247,8 @@ public class BidButton extends View {
             }
         }
         else if (event.getActionMasked() == MotionEvent.ACTION_UP){
-            myBid = selecting;
-            if (myBid == -1) myBid = -2;
+            myBid = selecting+1;
+            if (selecting == -1) myBid = -2;
             isPressed = false;
             selecting = -2;
             animatorOpen.end();
@@ -270,7 +273,7 @@ public class BidButton extends View {
             canvas.translate(radius, radius);
             canvas.rotate(startAngle - 90 + sweepAngle / 2);
             for (int i = 1; i <= n; i++) {
-                canvas.drawText(String.valueOf(i), -textSize/2/2, r - viewLength / 11, textPaint);
+                canvas.drawText(String.valueOf(i), 0, r - viewLength / 11, textPaint);
                 canvas.rotate(sweepAngle);
             }
             canvas.restore();
@@ -283,6 +286,6 @@ public class BidButton extends View {
             canvas.drawPath(centerCircle,mHatPaint);
         }
         canvas.translate(radius,radius);
-        canvas.drawText(centerText,-textSize/2/2,textSize/2/2,textPaint);
+        canvas.drawText(centerText,0,textSize/2/2,textPaint);
     }
 }

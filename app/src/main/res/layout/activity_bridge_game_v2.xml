@@ -62,7 +62,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/myPlayingCard"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="10sp"
+        android:layout_marginBottom="10sp"
         app:srcCompat="@drawable/win_bridge_level_list" />
 
     <ImageView
@@ -143,18 +145,21 @@
         android:layout_below="@id/btnClubs"
         android:layout_toRightOf="@id/btnSpades"/>
 
-    <com.example.seamasshih.fxcbridge.View.BidButton
+    <Button
         android:id="@+id/btnPass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true" />
+        android:layout_toRightOf="@+id/bidText"
+        android:layout_alignBottom="@+id/bidText"
+        android:layout_marginLeft="20sp"
+        android:text="@string/btn_pass"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/bidText"
-        android:layout_below="@id/btnClubs"
+        android:layout_alignBottom="@id/btnSpades"
+        android:layout_marginLeft="20sp"
         android:layout_toRightOf="@id/btnNoTrump"
         android:text="@string/txt_bid"
         android:textSize="35sp"/>
