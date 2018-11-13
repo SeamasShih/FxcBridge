@@ -65,7 +65,9 @@ public class SocketServerFunction {
 
     public void deliverFirstCardToClient(int playerIndex, GameBoard MyGameBoard)  {
         if (playerIndex != 0 && playerIndex <= Server.CLIENT_LIMITATION){
+            Log.v("TAG","playerIndex:" + playerIndex);
             for (int i = 13 * playerIndex; i <= 13 * playerIndex + 12; i++){
+                Log.w("TAG","i:"+i);
                 ThreadList.getClientThread(playerIndex).sendMessage("SetFirstCard#"+String.valueOf(MyGameBoard.getCardWaitForDrawingWithIndex(i))+"#");
             }
         }

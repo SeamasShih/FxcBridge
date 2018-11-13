@@ -6,6 +6,8 @@ import android.util.Log;
 
 import com.example.seamasshih.fxcbridge.MainGameServer;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -23,6 +25,9 @@ public class ServerReceiveSend extends Thread {
     private int playerIndex;
     private InputStream inputStream = null;
     private PrintWriter printWriter;
+    private DataOutputStream dataOutputStream = null;
+    private DataInputStream dataInputStream = null;
+
 
     public ServerReceiveSend(Socket s, int inputPlayerIndex){
         this.socket = s;
@@ -39,15 +44,23 @@ public class ServerReceiveSend extends Thread {
         byte [] buff = new byte[4096];
         while (isRun){
             try {
-                if ((receiveLength = inputStream.read(buff)) != -1){
-                    receiveMessage = new String(buff, 0, receiveLength);
-                    Intent intent = new Intent("ClientMessage");
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("PlayerIndex",playerIndex);
-                    bundle.putString("ClientMessage",receiveMessage);
-                    intent.putExtras(bundle);
-                    MainGameServer.context.sendBroadcast(intent);
-                }
+//                if ((receiveLength = inputStream.read(buff)) != -1){
+//                    receiveMessage = new String(buff, 0, receiveLength);
+//                    Intent intent = new Intent("ClientMessage");
+//                    Bundle bundle = new Bundle();
+//                    bundle.putInt("PlayerIndex",playerIndex);
+//                    bundle.putString("ClientMessage",receiveMessage);
+//                    intent.putExtras(bundle);
+//                    MainGameServer.context.sendBroadcast(intent);
+//                }
+                receiveMessage = dataInputStream.readUTF();
+                Intent intent = new Intent("ClientMessage");
+                Bundle bundle = new Bundle();
+                bundle.putInt("PlayerIndex",playerIndex);
+                bundle.putString("ClientMessage",receiveMessage);
+                intent.putExtras(bundle);
+                MainGameServer.context.sendBroadcast(intent);
+
             }catch (IOException e){
                 e.printStackTrace();
             }
@@ -59,17 +72,23 @@ public class ServerReceiveSend extends Thread {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                printWriter.print(message);
-                printWriter.flush();
-                Log.d("TAG","Use for Temp Save");
+//                printWriter.print(message);
+//                printWriter.flush();
+                try {
+                    dataOutputStream.writeUTF(message);
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
             }
         }).start();
     }
 
     private void initialDataStream(){
         try {
-            inputStream = socket.getInputStream();
-            printWriter = new PrintWriter(socket.getOutputStream(),true);
+//            inputStream = socket.getInputStream();
+//            printWriter = new PrintWriter(socket.getOutputStream(),true);
+            dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            dataInputStream = new DataInputStream(socket.getInputStream());
         }catch (IOException e){
             e.printStackTrace();
         }

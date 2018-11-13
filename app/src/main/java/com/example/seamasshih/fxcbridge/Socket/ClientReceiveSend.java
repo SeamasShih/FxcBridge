@@ -6,6 +6,7 @@ import android.util.Log;
 import com.example.seamasshih.fxcbridge.MainGameClient;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -20,6 +21,7 @@ public class ClientReceiveSend extends Thread {
     private String receiveMessage = null;
     private boolean isRun = true;
     private DataInputStream dataInputStream = null;
+    private DataOutputStream dataOutputStream = null;
     private PrintWriter printWriter;
 
     public ClientReceiveSend(Socket s){
@@ -34,9 +36,9 @@ public class ClientReceiveSend extends Thread {
 
         while (isRun){
             try {
-                receiveLength = dataInputStream.read(buff);
-                receiveMessage = new String(buff, 0, receiveLength, "utf-8");
-                Log.v("TAG","ClientReceiveSend:39 "+receiveMessage);
+//                receiveLength = dataInputStream.read(buff);
+//                receiveMessage = new String(buff, 0, receiveLength, "utf-8");
+                receiveMessage = dataInputStream.readUTF();
                 Intent intent = new Intent("ServerMessage");
                 intent.putExtra("ServerMessage",receiveMessage);
                 MainGameClient.context.sendBroadcast(intent);
@@ -51,16 +53,23 @@ public class ClientReceiveSend extends Thread {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                printWriter.print(message);
-                printWriter.flush();
+//                printWriter.print(message);
+//                printWriter.flush();
+                try {
+                    dataOutputStream.writeUTF(message);
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+
             }
         }).start();
     }
 
     private void initialDataStream(){
         try {
-            printWriter = new PrintWriter(socket.getOutputStream(),true);
+//            printWriter = new PrintWriter(socket.getOutputStream(),true);
             dataInputStream = new DataInputStream(socket.getInputStream());
+            dataOutputStream = new DataOutputStream(socket.getOutputStream());
         }catch (IOException e){
             e.printStackTrace();
         }

@@ -300,7 +300,7 @@ public class MainGameServer extends AppCompatActivity {
         }
     }
 
-    private class ServerHandler extends Handler {
+    private  class ServerHandler extends Handler {
         public void handleMessage(Message message){
             switch (message.what) {
                 case SET_PLAYER_CARD:
